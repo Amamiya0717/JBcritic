@@ -83,7 +83,9 @@ export default async function Header() {
                 <Link href="/games/new" className="nav-btn primary">
                   게임 추가
                 </Link>
-                <span className="nav-user">{nickname}</span>
+                <Link href="/mypage" className="nav-user">
+                  {nickname}
+                </Link>
                 <form action={signOut}>
                   <button type="submit" className="nav-btn">
                     로그아웃

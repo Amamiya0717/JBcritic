@@ -146,6 +146,9 @@ select {
   font-size: 0.78rem;
   padding: 0 4px;
 }
+.nav-user:hover {
+  color: #fff;
+}
 
 .subbar {
   background: var(--black-soft);

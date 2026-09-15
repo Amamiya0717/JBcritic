@@ -98,6 +98,28 @@ export async function deleteReview(
   return { error: null };
 }
 
+export async function updateNickname(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const nickname = String(formData.get("nickname") || "").trim();
+  if (!nickname) return { error: "닉네임을 입력해주세요." };
+  if (nickname.length > 20) return { error: "닉네임은 20자 이내로 입력해주세요." };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ nickname })
+    .eq("id", user.id);
+
+  if (error) return { error: "닉네임 변경에 실패했어요: " + error.message };
+
+  revalidatePath("/", "layout");
+  return { error: null };
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
