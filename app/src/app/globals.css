@@ -265,16 +265,53 @@ select {
 .spotlight-section {
   margin-bottom: 32px;
 }
+.spotlight-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+  border-bottom: 3px solid var(--black);
+}
 .spotlight-title {
   font-size: 1.15rem;
   font-weight: 900;
-  margin: 0 0 14px;
+  margin: 0;
+}
+.spotlight-arrows {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.carousel-arrow {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--black);
+  background: #fff;
+  color: var(--black);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-arrow:hover:not(:disabled) {
+  background: var(--black);
+  color: #fff;
+}
+.carousel-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 .spotlight-scroll {
   display: flex;
   gap: 16px;
   overflow-x: auto;
   padding-bottom: 6px;
+  scroll-behavior: smooth;
 }
 
 .meta-card {
