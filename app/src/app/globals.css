@@ -55,15 +55,15 @@ select {
   margin: 0 auto;
   padding: 14px 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 .logo-text {
   color: #fff;
@@ -71,10 +71,51 @@ select {
   font-size: 1.25rem;
   letter-spacing: -0.01em;
 }
-.nav {
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.main-nav-link {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.main-nav-link:hover {
+  color: var(--yellow);
+}
+.main-nav-link.disabled {
+  color: #5a5a5a;
+  cursor: default;
+}
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e8e8e8;
+  border-radius: 20px;
+  padding: 7px 14px;
+  flex: 1;
+  min-width: 120px;
+  max-width: 260px;
+}
+.nav-search-icon {
+  color: #777;
+  flex-shrink: 0;
+}
+.nav-search-input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.85rem;
+  color: var(--text);
+  width: 100%;
+}
+.nav-actions {
   display: flex;
   gap: 6px;
   align-items: center;
+  flex-shrink: 0;
 }
 .nav-btn {
   background: transparent;

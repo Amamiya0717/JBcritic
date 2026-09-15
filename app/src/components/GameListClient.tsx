@@ -8,8 +8,14 @@ import type { GameWithStats } from "@/lib/types";
 
 type SortKey = "score-desc" | "score-asc" | "recent" | "reviews" | "title";
 
-export default function GameListClient({ games }: { games: GameWithStats[] }) {
-  const [search, setSearch] = useState("");
+export default function GameListClient({
+  games,
+  initialSearch = "",
+}: {
+  games: GameWithStats[];
+  initialSearch?: string;
+}) {
+  const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortKey>("score-desc");
 
   const list = useMemo(() => {

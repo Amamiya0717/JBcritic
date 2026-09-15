@@ -3,7 +3,11 @@ import GameListClient from "@/components/GameListClient";
 import { createClient } from "@/lib/supabase/server";
 import { withStats, type Game } from "@/lib/types";
 
-export default async function HomePage() {
+export default async function HomePage(props: PageProps<"/">) {
+  const searchParams = await props.searchParams;
+  const qRaw = searchParams.q;
+  const initialSearch = typeof qRaw === "string" ? qRaw : "";
+
   const supabase = await createClient();
   const { data: games } = await supabase
     .from("games")
@@ -20,7 +24,7 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <GameListClient games={list} />
+      <GameListClient games={list} initialSearch={initialSearch} />
     </>
   );
 }
