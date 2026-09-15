@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
-import NicknameForm from "@/components/NicknameForm";
+import MyPageTabs from "@/components/MyPageTabs";
 import { createClient } from "@/lib/supabase/server";
-import { fmtDate } from "@/lib/format";
 
 export default async function MyPage() {
   const supabase = await createClient();
@@ -26,39 +25,23 @@ export default async function MyPage() {
     );
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("nickname, created_at")
-    .eq("id", user.id)
-    .single();
-
   return (
     <>
       <Header />
       <div className="page">
-        <h2 id="account" className="section-title" style={{ fontSize: "1rem" }}>
-          내 계정
-        </h2>
+        <MyPageTabs active="reviews" />
 
-        {profile && (
-          <p className="meta-text" style={{ marginBottom: 16 }}>
-            {fmtDate(profile.created_at)} 가입
-          </p>
-        )}
-
-        <NicknameForm initialNickname={profile?.nickname ?? ""} />
-
-        <h3 id="reviews" className="section-title" style={{ marginTop: 24 }}>
-          내 리뷰·작성 글
-        </h3>
-        <h4 className="section-title" style={{ fontSize: "0.78rem", borderBottom: "none" }}>
+        <h4 className="section-title" style={{ fontSize: "0.78rem" }}>
           내가 쓴 평가
         </h4>
         <div className="empty-state">
           <p>준비 중이에요.</p>
         </div>
 
-        <h4 className="section-title" style={{ fontSize: "0.78rem", borderBottom: "none" }}>
+        <h4
+          className="section-title"
+          style={{ fontSize: "0.78rem", marginTop: 24 }}
+        >
           내가 쓴 게시판 글
         </h4>
         <div className="empty-state">

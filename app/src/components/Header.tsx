@@ -100,10 +100,10 @@ export default async function Header() {
                     </svg>
                   </button>
                   <div className="profile-menu">
-                    <Link href="/mypage#reviews" className="profile-menu-item">
+                    <Link href="/mypage" className="profile-menu-item">
                       내 리뷰·작성 글
                     </Link>
-                    <Link href="/mypage#account" className="profile-menu-item">
+                    <Link href="/mypage/account" className="profile-menu-item">
                       내 계정
                     </Link>
                     <form action={signOut}>

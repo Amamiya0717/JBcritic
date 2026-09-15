@@ -209,6 +209,28 @@ select {
   padding: 20px;
 }
 
+.subtabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  border-bottom: 3px solid var(--black);
+}
+.subtab {
+  padding: 8px 4px;
+  margin-bottom: -3px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+}
+.subtab:hover {
+  color: var(--text);
+}
+.subtab.active {
+  color: var(--text);
+  border-bottom-color: var(--black);
+}
+
 /* toolbar */
 .toolbar {
   display: flex;
