@@ -36,8 +36,8 @@ export default async function MyPage() {
     <>
       <Header />
       <div className="page">
-        <h2 className="section-title" style={{ fontSize: "1rem" }}>
-          마이페이지
+        <h2 id="account" className="section-title" style={{ fontSize: "1rem" }}>
+          내 계정
         </h2>
 
         {profile && (
@@ -48,16 +48,19 @@ export default async function MyPage() {
 
         <NicknameForm initialNickname={profile?.nickname ?? ""} />
 
-        <h3 className="section-title" style={{ marginTop: 24 }}>
-          내가 쓴 평가
+        <h3 id="reviews" className="section-title" style={{ marginTop: 24 }}>
+          내 리뷰·작성 글
         </h3>
+        <h4 className="section-title" style={{ fontSize: "0.78rem", borderBottom: "none" }}>
+          내가 쓴 평가
+        </h4>
         <div className="empty-state">
           <p>준비 중이에요.</p>
         </div>
 
-        <h3 className="section-title" style={{ marginTop: 24 }}>
+        <h4 className="section-title" style={{ fontSize: "0.78rem", borderBottom: "none" }}>
           내가 쓴 게시판 글
-        </h3>
+        </h4>
         <div className="empty-state">
           <p>준비 중이에요.</p>
         </div>
