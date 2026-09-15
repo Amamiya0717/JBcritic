@@ -45,6 +45,10 @@ export default function LoginForm() {
       <button className="btn btn-discord" onClick={handleDiscordLogin}>
         디스코드로 로그인
       </button>
+      <p className="hint" style={{ marginTop: 8 }}>
+        디스코드 앱으로 들어오셨다면, 링크를 길게 눌러 <b>다른 브라우저로 열기</b>를
+        선택해주세요. 인앱 브라우저에서는 로그인이 저장되지 않아요.
+      </p>
 
       <div className="divider">또는</div>
 
