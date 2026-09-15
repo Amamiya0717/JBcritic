@@ -1,7 +1,18 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import MyPageTabs from "@/components/MyPageTabs";
+import ScoreBox from "@/components/ScoreBox";
 import { createClient } from "@/lib/supabase/server";
+import { fmtDate } from "@/lib/format";
+
+type MyReview = {
+  id: string;
+  game_id: string;
+  score: number;
+  comment: string | null;
+  created_at: string;
+  games: { title: string } | null;
+};
 
 export default async function MyPage() {
   const supabase = await createClient();
@@ -25,6 +36,14 @@ export default async function MyPage() {
     );
   }
 
+  const { data: reviews } = await supabase
+    .from("reviews")
+    .select("id, game_id, score, comment, created_at, games(title)")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  const myReviews = (reviews ?? []) as unknown as MyReview[];
+
   return (
     <>
       <Header />
@@ -32,11 +51,36 @@ export default async function MyPage() {
         <MyPageTabs active="reviews" />
 
         <h4 className="section-title" style={{ fontSize: "0.78rem" }}>
-          내가 쓴 평가
+          내가 쓴 평가 ({myReviews.length})
         </h4>
-        <div className="empty-state">
-          <p>준비 중이에요.</p>
-        </div>
+        {myReviews.length === 0 ? (
+          <div className="empty-state">
+            <p>아직 남긴 평가가 없어요.</p>
+          </div>
+        ) : (
+          <div>
+            {myReviews.map((r) => (
+              <Link
+                key={r.id}
+                href={`/games/${r.game_id}`}
+                className="review-item review-item-link"
+              >
+                <ScoreBox score={r.score} size="sm" />
+                <div className="review-body">
+                  <div className="review-top">
+                    <span className="review-member">
+                      {r.games?.title ?? "삭제된 게임"}
+                    </span>
+                    <span className="review-date">{fmtDate(r.created_at)}</span>
+                  </div>
+                  {r.comment && (
+                    <p className="review-comment my-review-excerpt">{r.comment}</p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         <h4
           className="section-title"
