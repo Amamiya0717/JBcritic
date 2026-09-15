@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/actions";
+import Logo from "@/components/Logo";
 
 export default async function Header() {
   const supabase = await createClient();
@@ -23,7 +24,7 @@ export default async function Header() {
       <div className="topbar">
         <div className="topbar-inner">
           <Link href="/" className="logo">
-            <div className="logo-mark">JB</div>
+            <Logo />
             <div className="logo-text">JBcritic</div>
           </Link>
           <div className="nav">
