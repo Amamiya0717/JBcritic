@@ -22,7 +22,7 @@ export default function NicknameForm({ initialNickname }: { initialNickname: str
     <form action={handleSubmit} className="review-form">
       {error && <p className="form-error">{error}</p>}
       <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="nickname">사이트 닉네임</label>
+        <label htmlFor="nickname">닉네임 설정</label>
         <input
           className="input"
           id="nickname"
