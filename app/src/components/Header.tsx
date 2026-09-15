@@ -41,8 +41,8 @@ export default async function Header() {
                       aria-label="마이페이지 메뉴"
                     >
                       <svg
-                        width="32"
-                        height="32"
+                        width="38"
+                        height="38"
                         viewBox="0 0 40 40"
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
@@ -99,8 +99,8 @@ export default async function Header() {
           <form action="/" method="GET" className="nav-search">
             <svg
               className="nav-search-icon"
-              width="15"
-              height="15"
+              width="17"
+              height="17"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -122,11 +122,6 @@ export default async function Header() {
               aria-label="게임 검색"
             />
           </form>
-        </div>
-      </div>
-      <div className="subbar">
-        <div className="subbar-inner">
-          정신병동이 플레이한 게임에 <span>정신병동이 직접 매긴</span> 점수
         </div>
       </div>
     </>
