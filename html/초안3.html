@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정병크리틱</title>
+<style>
+  :root{
+    --black:#0d0d0d;
+    --black-soft:#1c1c1c;
+    --yellow:#ffcc33;
+    --green:#66cc33;
+    --green-dark:#4fa326;
+    --mid:#ffcc33;
+    --mid-dark:#cc9f1f;
+    --red:#ff0000;
+    --red-dark:#cc0000;
+    --bg:#ffffff;
+    --bg-alt:#f2f2f2;
+    --border:#dcdcdc;
+    --text:#222222;
+    --text-muted:#666666;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg-alt);
+    color:var(--text);
+    font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;
+    line-height:1.5;
+    font-size:14px;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;}
+  .wrap{max-width:920px;margin:0 auto;}
+  .inner{max-width:920px;margin:0 auto;padding:0 20px;}
+
+  /* header */
+  .topbar{background:var(--black);border-bottom:3px solid var(--yellow);}
+  .topbar-inner{
+    max-width:920px;margin:0 auto;padding:14px 20px;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .logo{
+    display:flex;align-items:center;gap:10px;cursor:pointer;
+  }
+  .logo-mark{
+    background:var(--yellow);color:var(--black);
+    font-weight:900;font-size:1.1rem;
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    border-radius:var(--radius);
+    flex-shrink:0;
+  }
+  .logo-text{color:#fff;font-weight:800;font-size:1.25rem;letter-spacing:-0.01em;}
+  .nav{display:flex;gap:6px;}
+  .nav-btn{
+    background:transparent;border:1.5px solid transparent;color:#ccc;
+    padding:8px 14px;font-size:0.78rem;font-weight:700;letter-spacing:0.04em;
+    text-transform:uppercase;cursor:pointer;border-radius:var(--radius);
+  }
+  .nav-btn:hover{color:#fff;border-color:#444;}
+  .nav-btn.primary{background:var(--yellow);color:var(--black);}
+  .nav-btn.primary:hover{background:#e6b82e;border-color:#e6b82e;}
+
+  .subbar{background:var(--black-soft);}
+  .subbar-inner{
+    max-width:920px;margin:0 auto;padding:6px 20px;
+    color:#999;font-size:0.78rem;
+  }
+  .subbar-inner span{color:var(--yellow);font-weight:700;}
+
+  .page{max-width:920px;margin:0 auto;padding:20px;}
+
+  /* toolbar */
+  .toolbar{
+    display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;
+    background:var(--bg);border:1px solid var(--border);padding:12px;border-radius:var(--radius);
+  }
+  .input,.select,textarea{
+    font-family:inherit;font-size:0.86rem;border:1px solid var(--border);
+    background:#fff;padding:9px 10px;border-radius:var(--radius);color:var(--text);
+  }
+  .input:focus,.select:focus,textarea:focus{outline:2px solid var(--black);outline-offset:0;}
+  .toolbar .input{flex:1;min-width:160px;}
+
+  /* score box - metacritic signature square */
+  .score-box{
+    font-weight:800;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:var(--radius);
+    font-family:Arial,sans-serif;
+  }
+  .score-box.tier-good{background:var(--green-dark);}
+  .score-box.tier-mid{background:var(--mid-dark);color:#2a2200;}
+  .score-box.tier-low{background:var(--red-dark);}
+  .score-box.tier-none{background:#999;}
+
+  .score-lg{width:68px;height:68px;font-size:1.7rem;}
+  .score-md{width:52px;height:52px;font-size:1.3rem;}
+  .score-sm{width:36px;height:36px;font-size:0.95rem;border-radius:2px;}
+
+  /* game list */
+  .game-row{
+    display:flex;gap:14px;align-items:center;
+    background:var(--bg);border:1px solid var(--border);
+    padding:12px;margin-bottom:8px;cursor:pointer;border-radius:var(--radius);
+    transition:border-color .12s, box-shadow .12s;
+  }
+  .game-row:hover{border-color:var(--black);box-shadow:1px 2px 0 var(--border);}
+  .game-row-body{flex:1;min-width:0;}
+  .game-title{font-weight:800;font-size:1rem;margin:0 0 5px;color:var(--text);}
+  .game-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .tag{
+    font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;
+    color:var(--text-muted);background:var(--bg-alt);border:1px solid var(--border);
+    padding:2px 7px;border-radius:var(--radius);
+  }
+  .meta-text{font-size:0.78rem;color:var(--text-muted);}
+
+  .empty-state{
+    text-align:center;padding:50px 20px;color:var(--text-muted);
+    background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+  }
+  .empty-state p{margin:0 0 14px;}
+  .loading{color:var(--text-muted);padding:40px 0;text-align:center;font-size:0.85rem;}
+
+  /* buttons */
+  .btn{
+    border:1.5px solid var(--black);background:#fff;color:var(--black);
+    padding:9px 16px;border-radius:var(--radius);font-size:0.82rem;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.03em;cursor:pointer;
+  }
+  .btn:hover{background:var(--black);color:#fff;}
+  .btn-gold{background:var(--yellow);border-color:var(--yellow);color:var(--black);}
+  .btn-gold:hover{background:#e6b82e;border-color:#e6b82e;color:var(--black);}
+  .btn-text{background:none;border:none;color:var(--text-muted);font-size:0.78rem;font-weight:700;cursor:pointer;padding:0;}
+  .btn-text:hover{color:var(--text);}
+
+  /* detail */
+  .back-link{display:inline-block;margin-bottom:14px;}
+  .detail-card{
+    background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px;margin-bottom:18px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;
+  }
+  .detail-title{font-size:1.5rem;font-weight:900;margin:0 0 8px;}
+  .detail-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+  .detail-desc{color:var(--text-muted);font-size:0.9rem;margin:0;white-space:pre-wrap;}
+
+  .section-title{
+    font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--text);margin:0 0 12px;padding-bottom:8px;border-bottom:3px solid var(--black);
+  }
+
+  .review-form{
+    background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px;margin-bottom:24px;
+  }
+  .form-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;}
+  .field label{font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.02em;}
+  .field.score-field{flex:0 0 90px;}
+  textarea{resize:vertical;min-height:50px;width:100%;}
+  .form-error{color:var(--red-dark);font-size:0.82rem;margin:0 0 10px;font-weight:700;}
+
+  .review-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+  .review-item:last-child{border-bottom:none;}
+  .review-body{flex:1;}
+  .review-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:3px;flex-wrap:wrap;}
+  .review-member{font-weight:800;}
+  .review-date{font-size:0.72rem;color:var(--text-muted);}
+  .review-comment{font-size:0.87rem;margin:0;white-space:pre-wrap;}
+  .review-del{background:none;border:none;color:var(--text-muted);font-size:0.72rem;cursor:pointer;padding:4px 0 0;font-weight:700;}
+  .review-del:hover{color:var(--red-dark);}
+
+  /* add form */
+  .add-form{max-width:520px;background:var(--bg);border:1px solid var(--border);padding:20px;border-radius:var(--radius);}
+  .swatch-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+  .swatch{width:26px;height:26px;border:2px solid transparent;cursor:pointer;border-radius:var(--radius);}
+  .swatch.selected{border-color:var(--black);}
+
+  /* cover images */
+  .game-thumb-img,.game-thumb-fallback{width:44px;height:60px;border-radius:var(--radius);flex-shrink:0;object-fit:cover;}
+  .game-thumb-fallback{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.05rem;}
+  .detail-cover-img,.detail-cover-fallback{width:110px;height:150px;border-radius:var(--radius);flex-shrink:0;object-fit:cover;}
+  .detail-cover-fallback{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:2.2rem;}
+  .cover-preview{width:80px;height:112px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);display:block;}
+
+  @media (max-width:520px){
+    .topbar-inner{flex-direction:column;align-items:flex-start;}
+    .detail-card{flex-direction:column;}
+    .score-lg{width:56px;height:56px;font-size:1.4rem;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SWATCHES = ["#66cc33","#ffcc33","#ff0000","#3b7bd9","#8c4bc7","#666666"];
+
+  var state = {
+    view: "list",
+    gameId: null,
+    games: null,
+    currentGame: null,
+    search: "",
+    sort: "score-desc",
+    reviewerName: "",
+    formError: ""
+  };
+
+  var app = document.getElementById("app");
+
+  async function getIndex(){
+    try{ var res = await window.storage.get("games-index", true); return res ? JSON.parse(res.value) : []; }
+    catch(e){ return []; }
+  }
+  async function saveIndex(list){
+    try{ await window.storage.set("games-index", JSON.stringify(list), true); }
+    catch(e){ console.error("index save failed", e); }
+  }
+  async function getGame(id){
+    try{ var res = await window.storage.get("game:"+id, true); return res ? JSON.parse(res.value) : null; }
+    catch(e){ return null; }
+  }
+  async function saveGame(id, data){
+    try{ await window.storage.set("game:"+id, JSON.stringify(data), true); }
+    catch(e){ console.error("game save failed", e); }
+  }
+
+  function esc(str){ var d=document.createElement("div"); d.textContent = str==null?"":String(str); return d.innerHTML; }
+  function tierOf(score){
+    if(score == null) return "tier-none";
+    if(score >= 7.5) return "tier-good";
+    if(score >= 5.0) return "tier-mid";
+    return "tier-low";
+  }
+  function fmtScore(score){ return score == null ? "–" : score.toFixed(1); }
+  function fmtDate(iso){
+    var d = new Date(iso);
+    var mm = String(d.getMonth()+1).padStart(2,"0");
+    var dd = String(d.getDate()).padStart(2,"0");
+    return d.getFullYear()+"."+mm+"."+dd;
+  }
+  function genId(){ return "g_"+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+  function resizeImageFile(file, maxSize, quality){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          var scale = Math.min(1, maxSize / Math.max(w, h));
+          var cw = Math.max(1, Math.round(w*scale));
+          var ch = Math.max(1, Math.round(h*scale));
+          var canvas = document.createElement("canvas");
+          canvas.width = cw; canvas.height = ch;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, cw, ch);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = function(){ reject(new Error("이미지를 읽을 수 없어요.")); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error("파일을 읽을 수 없어요.")); };
+      reader.readAsDataURL(file);
+    });
+  }
+  function initials(title){
+    var t = (title||"").trim();
+    return t ? t.charAt(0).toUpperCase() : "?";
+  }
+  function thumbHtml(coverUrl, color, title, imgClass, fbClass){
+    var letter = initials(title);
+    var fallback = '<div class="'+fbClass+'" style="background:'+(color||"#666666")+';'+(coverUrl?'display:none;':'')+'">'+letter+'</div>';
+    if(!coverUrl) return fallback;
+    return '<img class="'+imgClass+'" src="'+esc(coverUrl)+'" alt="" ' +
+      'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' + fallback;
+  }
+  function recalc(game){
+    if(!game.reviews.length){ game.avgScore = null; }
+    else{
+      var sum = game.reviews.reduce(function(a,r){return a+r.score;},0);
+      game.avgScore = Math.round((sum/game.reviews.length)*10)/10;
+    }
+    game.reviewCount = game.reviews.length;
+  }
+  function syncIndexEntry(game){
+    var idx = state.games.findIndex(function(g){return g.id===game.id;});
+    var entry = { id:game.id, title:game.title, genre:game.genre, color:game.color, coverThumb:game.coverThumb,
+      avgScore:game.avgScore, reviewCount:game.reviewCount, addedAt:game.addedAt };
+    if(idx === -1) state.games.push(entry); else state.games[idx] = entry;
+  }
+
+  function render(){
+    if(state.view === "list") renderList();
+    else if(state.view === "detail") renderDetail();
+    else if(state.view === "add") renderAdd();
+  }
+
+  function topHeader(){
+    return '<div class="topbar"><div class="topbar-inner">' +
+      '<div class="logo" id="homeLink"><div class="logo-mark">정</div><div class="logo-text">정병크리틱</div></div>' +
+      '<div class="nav">' +
+        '<button class="nav-btn" id="listNavBtn">전체 게임</button>' +
+        '<button class="nav-btn primary" id="addGameBtn">게임 추가</button>' +
+      '</div>' +
+    '</div></div>' +
+    '<div class="subbar"><div class="subbar-inner">정신병동이 플레이한 게임에 <span>정신병동이 직접 매긴</span> 점수</div></div>';
+  }
+
+  function bindHeader(){
+    document.getElementById("homeLink").onclick = function(){ state.games=null; state.view="list"; render(); };
+    var lb = document.getElementById("listNavBtn");
+    if(lb) lb.onclick = function(){ state.games=null; state.view="list"; render(); };
+    document.getElementById("addGameBtn").onclick = openAdd;
+  }
+
+  async function renderList(){
+    if(state.games === null){
+      app.innerHTML = topHeader() + '<div class="page"><div class="loading">기록부를 불러오는 중...</div></div>';
+      bindHeader();
+      state.games = await getIndex();
+    }
+    var list = state.games.slice();
+
+    if(state.search.trim()){
+      var q = state.search.trim().toLowerCase();
+      list = list.filter(function(g){
+        return g.title.toLowerCase().indexOf(q) > -1 || (g.genre||"").toLowerCase().indexOf(q) > -1;
+      });
+    }
+    list.sort(function(a,b){
+      if(state.sort === "score-desc") return (b.avgScore==null?-1:b.avgScore) - (a.avgScore==null?-1:a.avgScore);
+      if(state.sort === "score-asc") return (a.avgScore==null?999:a.avgScore) - (b.avgScore==null?999:b.avgScore);
+      if(state.sort === "recent") return new Date(b.addedAt) - new Date(a.addedAt);
+      if(state.sort === "reviews") return b.reviewCount - a.reviewCount;
+      if(state.sort === "title") return a.title.localeCompare(b.title,"ko");
+      return 0;
+    });
+
+    var html = topHeader() + '<div class="page">';
+    html += '<div class="toolbar">' +
+      '<input class="input" id="searchInput" type="text" placeholder="게임 제목이나 장르로 검색" value="'+esc(state.search)+'">' +
+      '<select class="select" id="sortSelect">' +
+        opt("score-desc","점수 높은순")+opt("score-asc","점수 낮은순")+opt("recent","최근 등록순")+opt("reviews","리뷰 많은순")+opt("title","이름순") +
+      '</select>' +
+    '</div>';
+
+    if(!list.length){
+      html += state.games.length === 0
+        ? '<div class="empty-state"><p>아직 등록된 게임이 없어요. 정신병동의 첫 평가를 기록해보세요.</p><button class="btn btn-gold" id="emptyAddBtn">게임 추가</button></div>'
+        : '<div class="empty-state"><p>검색 결과가 없어요.</p></div>';
+    }else{
+      html += list.map(function(g){
+        var tier = tierOf(g.avgScore);
+        return '<div class="game-row" data-id="'+g.id+'">' +
+          thumbHtml(g.coverThumb, g.color, g.title, "game-thumb-img", "game-thumb-fallback") +
+          '<div class="score-box score-md '+tier+'">'+fmtScore(g.avgScore)+'</div>' +
+          '<div class="game-row-body">' +
+            '<p class="game-title">'+esc(g.title)+'</p>' +
+            '<div class="game-meta">' +
+              (g.genre ? '<span class="tag">'+esc(g.genre)+'</span>' : '') +
+              '<span class="meta-text">리뷰 '+g.reviewCount+'건</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+    html += '</div>';
+    app.innerHTML = html;
+    bindHeader();
+
+    function opt(v,l){ return '<option value="'+v+'"'+(state.sort===v?" selected":"")+'>'+l+'</option>'; }
+    document.getElementById("searchInput").oninput = function(e){ state.search = e.target.value; renderList(); };
+    document.getElementById("sortSelect").onchange = function(e){ state.sort = e.target.value; renderList(); };
+    var emptyBtn = document.getElementById("emptyAddBtn");
+    if(emptyBtn) emptyBtn.onclick = openAdd;
+    document.querySelectorAll(".game-row").forEach(function(row){
+      row.onclick = function(){ openDetail(row.getAttribute("data-id")); };
+    });
+  }
+
+  function openAdd(){ state.view="add"; state.formError=""; render(); }
+  async function openDetail(id){
+    state.view="detail"; state.gameId=id; state.currentGame=null; state.formError="";
+    render();
+    state.currentGame = await getGame(id);
+    render();
+  }
+
+  function renderDetail(){
+    var html = topHeader() + '<div class="page">';
+    html += '<a class="back-link btn-text" id="backBtn">← 목록으로</a>';
+    if(!state.currentGame){
+      html += '<div class="loading">불러오는 중...</div></div>';
+      app.innerHTML = html;
+      bindHeader();
+      document.getElementById("backBtn").onclick = function(){ state.view="list"; render(); };
+      return;
+    }
+    var g = state.currentGame;
+    var tier = tierOf(g.avgScore);
+
+    html += '<div class="detail-card">' +
+      thumbHtml(g.cover, g.color, g.title, "detail-cover-img", "detail-cover-fallback") +
+      '<div class="score-box score-lg '+tier+'">'+fmtScore(g.avgScore)+'</div>' +
+      '<div style="flex:1;min-width:200px;">' +
+        '<h2 class="detail-title">'+esc(g.title)+'</h2>' +
+        '<div class="detail-meta">' +
+          (g.genre ? '<span class="tag">'+esc(g.genre)+'</span>' : '') +
+          '<span class="meta-text">'+fmtDate(g.addedAt)+' 등록</span>' +
+          '<span class="meta-text">리뷰 '+g.reviewCount+'건</span>' +
+        '</div>' +
+        (g.description ? '<p class="detail-desc">'+esc(g.description)+'</p>' : '') +
+      '</div>' +
+    '</div>';
+
+    html += '<h3 class="section-title">평가 남기기</h3>';
+    html += '<div class="review-form">';
+    if(state.formError) html += '<p class="form-error">'+esc(state.formError)+'</p>';
+    html += '<div class="form-row">' +
+      '<div class="field"><label for="rvName">이름</label><input class="input" id="rvName" type="text" placeholder="닉네임" value="'+esc(state.reviewerName)+'"></div>' +
+      '<div class="field score-field"><label for="rvScore">점수 (0~10)</label><input class="input" id="rvScore" type="number" min="0" max="10" step="0.1" placeholder="8.5"></div>' +
+    '</div>' +
+    '<div class="field" style="margin-bottom:12px;"><label for="rvComment">코멘트</label><textarea class="input" id="rvComment" placeholder="한줄평을 남겨주세요"></textarea></div>' +
+    '<button class="btn btn-gold" id="submitReview">평가 등록</button>' +
+    '</div>';
+
+    html += '<h3 class="section-title">유저 평가 ('+g.reviews.length+')</h3>';
+    if(!g.reviews.length){
+      html += '<div class="empty-state"><p>아직 아무도 평가하지 않았어요.</p></div>';
+    }else{
+      var reviews = g.reviews.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+      html += reviews.map(function(r){
+        return '<div class="review-item">' +
+          '<div class="score-box score-sm '+tierOf(r.score)+'">'+r.score.toFixed(1)+'</div>' +
+          '<div class="review-body">' +
+            '<div class="review-top"><span class="review-member">'+esc(r.member)+'</span><span class="review-date">'+fmtDate(r.date)+'</span></div>' +
+            (r.comment ? '<p class="review-comment">'+esc(r.comment)+'</p>' : '') +
+            '<button class="review-del" data-rid="'+r.id+'">삭제</button>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+    html += '</div>';
+    app.innerHTML = html;
+    bindHeader();
+    document.getElementById("backBtn").onclick = function(){ state.view="list"; render(); };
+    document.getElementById("submitReview").onclick = submitReview;
+    document.querySelectorAll(".review-del").forEach(function(btn){
+      btn.onclick = function(){ deleteReview(btn.getAttribute("data-rid")); };
+    });
+  }
+
+  async function submitReview(){
+    var name = document.getElementById("rvName").value.trim();
+    var scoreRaw = document.getElementById("rvScore").value;
+    var comment = document.getElementById("rvComment").value.trim();
+    var score = parseFloat(scoreRaw);
+
+    if(!name){ state.formError="이름을 입력해주세요."; renderDetail(); return; }
+    if(scoreRaw === "" || isNaN(score) || score < 0 || score > 10){
+      state.formError="점수는 0에서 10 사이로 입력해주세요."; renderDetail(); return;
+    }
+    var g = state.currentGame;
+    g.reviews.push({
+      id:"r_"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+      member:name, score:Math.round(score*10)/10, comment:comment, date:new Date().toISOString()
+    });
+    recalc(g);
+    state.reviewerName = name;
+    state.formError = "";
+    await saveGame(g.id, g);
+    syncIndexEntry(g);
+    await saveIndex(state.games);
+    renderDetail();
+  }
+
+  async function deleteReview(rid){
+    if(!confirm("이 평가를 삭제할까요?")) return;
+    var g = state.currentGame;
+    g.reviews = g.reviews.filter(function(r){ return r.id !== rid; });
+    recalc(g);
+    await saveGame(g.id, g);
+    syncIndexEntry(g);
+    await saveIndex(state.games);
+    renderDetail();
+  }
+
+  function renderAdd(){
+    var html = topHeader() + '<div class="page">';
+    html += '<a class="back-link btn-text" id="backBtn">← 목록으로</a>';
+    html += '<h2 class="section-title" style="font-size:1rem;">새 게임 등록</h2>';
+    html += '<div class="add-form">';
+    if(state.formError) html += '<p class="form-error">'+esc(state.formError)+'</p>';
+    html += '<div class="field" style="margin-bottom:12px;"><label for="gTitle">게임 제목</label><input class="input" id="gTitle" type="text" placeholder="예: 리썰컴퍼니"></div>';
+    html += '<div class="field" style="margin-bottom:12px;"><label for="gGenre">장르 (선택)</label><input class="input" id="gGenre" type="text" placeholder="예: 협동 호러"></div>';
+    html += '<div class="field" style="margin-bottom:12px;"><label for="gDesc">간단 설명 (선택)</label><textarea class="input" id="gDesc" placeholder="어떤 게임인지 짧게 적어주세요"></textarea></div>';
+    html += '<div class="field" style="margin-bottom:12px;"><label for="gCoverFile">커버 이미지 업로드 (선택)</label><input class="input" id="gCoverFile" type="file" accept="image/*"></div>';
+    html += '<div class="field" style="margin-bottom:12px;"><label for="gCover">또는 이미지 URL 붙여넣기 (선택)</label><input class="input" id="gCover" type="url" placeholder="https://..."></div>';
+    html += '<div id="coverPreviewWrap" style="margin-bottom:12px;"></div>';
+    html += '<div class="field" style="margin-bottom:20px;"><label>대체 색상 (이미지가 없거나 안 불러와질 때 표시)</label><div class="swatch-row" id="swatchRow">' +
+      SWATCHES.map(function(c,i){ return '<span class="swatch'+(i===0?' selected':'')+'" data-color="'+c+'" style="background:'+c+'"></span>'; }).join("") +
+      '</div></div>';
+    html += '<button class="btn btn-gold" id="submitGame">등록하기</button>';
+    html += '</div></div>';
+
+    app.innerHTML = html;
+    bindHeader();
+    document.getElementById("backBtn").onclick = function(){ state.view="list"; render(); };
+
+    var selectedColor = SWATCHES[0];
+    var selectedCover = "";
+    var selectedCoverThumb = "";
+    document.querySelectorAll(".swatch").forEach(function(sw){
+      sw.onclick = function(){
+        document.querySelectorAll(".swatch").forEach(function(s){ s.classList.remove("selected"); });
+        sw.classList.add("selected");
+        selectedColor = sw.getAttribute("data-color");
+      };
+    });
+
+    function showCoverPreview(){
+      var wrap = document.getElementById("coverPreviewWrap");
+      if(!selectedCover){ wrap.innerHTML = ""; return; }
+      wrap.innerHTML = '<img class="cover-preview" src="'+esc(selectedCover)+'" alt="미리보기" ' +
+        'onerror="this.outerHTML=\'<div style=&quot;font-size:0.78rem;color:var(--red-dark);&quot;>이미지를 불러올 수 없어요.</div>\';">';
+    }
+
+    document.getElementById("gCoverFile").onchange = async function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      var wrap = document.getElementById("coverPreviewWrap");
+      wrap.innerHTML = '<p class="meta-text">이미지 처리 중...</p>';
+      try{
+        var detailUrl = await resizeImageFile(file, 480, 0.72);
+        var thumbUrl = await resizeImageFile(file, 160, 0.6);
+        selectedCover = detailUrl;
+        selectedCoverThumb = thumbUrl;
+        document.getElementById("gCover").value = "";
+        showCoverPreview();
+      }catch(err){
+        wrap.innerHTML = '<p class="form-error" style="margin:0;">이미지를 처리하지 못했어요. 다른 파일을 시도해주세요.</p>';
+      }
+    };
+
+    document.getElementById("gCover").oninput = function(e){
+      var url = e.target.value.trim();
+      selectedCover = url;
+      selectedCoverThumb = url;
+      document.getElementById("gCoverFile").value = "";
+      showCoverPreview();
+    };
+
+    document.getElementById("submitGame").onclick = async function(){
+      var title = document.getElementById("gTitle").value.trim();
+      var genre = document.getElementById("gGenre").value.trim();
+      var desc = document.getElementById("gDesc").value.trim();
+      if(!title){ state.formError="게임 제목을 입력해주세요."; renderAdd(); return; }
+
+      var id = genId();
+      var game = { id:id, title:title, genre:genre, description:desc, color:selectedColor,
+        cover:selectedCover, coverThumb:selectedCoverThumb,
+        addedAt:new Date().toISOString(), avgScore:null, reviewCount:0, reviews:[] };
+      await saveGame(id, game);
+      if(state.games === null) state.games = await getIndex();
+      syncIndexEntry(game);
+      await saveIndex(state.games);
+      state.formError = "";
+      openDetail(id);
+    };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

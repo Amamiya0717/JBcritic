@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정병크리틱 — 개발 로드맵</title>
+<style>
+  :root{
+    --bg:#FAFAF7;
+    --card:#FFFFFF;
+    --ink:#1B1F2A;
+    --muted:#63697A;
+    --line:#DEDFDB;
+    --accent:#3457D5;
+    --accent-soft:#EAEEFC;
+    --done:#2E9E64;
+    --done-soft:#E6F5EC;
+    --now:#B4842D;
+    --now-soft:#FBF2DF;
+    --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Segoe UI',Pretendard,Arial,sans-serif;
+    line-height:1.6;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:48px 24px 90px;}
+
+  .page-head{margin-bottom:36px;}
+  .eyebrow{
+    color:var(--accent);font-weight:700;font-size:0.78rem;
+    letter-spacing:0.06em;margin:0 0 8px;
+  }
+  h1{font-size:1.85rem;font-weight:800;margin:0 0 10px;letter-spacing:-0.01em;}
+  .page-desc{color:var(--muted);font-size:0.95rem;margin:0;max-width:560px;}
+
+  .stack-box{
+    display:flex;gap:10px;flex-wrap:wrap;
+    background:var(--accent-soft);border:1px solid #C9D3F5;
+    border-radius:var(--radius);padding:16px 18px;margin:28px 0 44px;
+  }
+  .stack-box-title{
+    width:100%;font-weight:700;font-size:0.82rem;color:var(--accent);
+    margin:0 0 4px;
+  }
+  .stack-pill{
+    background:#fff;border:1px solid #C9D3F5;color:var(--ink);
+    font-size:0.82rem;font-weight:600;padding:6px 12px;border-radius:20px;
+  }
+
+  .timeline{position:relative;padding-left:44px;}
+  .timeline::before{
+    content:"";position:absolute;left:17px;top:6px;bottom:6px;
+    width:2px;background:var(--line);
+  }
+  .stage{position:relative;margin-bottom:34px;}
+  .stage:last-child{margin-bottom:0;}
+  .stage-marker{
+    position:absolute;left:-44px;top:2px;
+    width:36px;height:36px;border-radius:50%;
+    background:#fff;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:0.9rem;color:var(--muted);
+  }
+  .stage.done .stage-marker{border-color:var(--done);color:var(--done);background:var(--done-soft);}
+  .stage.now .stage-marker{border-color:var(--now);color:var(--now);background:var(--now-soft);}
+
+  .stage-card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px 20px;
+  }
+  .stage.now .stage-card{border-color:var(--now);box-shadow:0 0 0 1px var(--now) inset;}
+  .stage-top{
+    display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;
+  }
+  .stage-title{font-size:1.05rem;font-weight:800;margin:0;}
+  .badge{
+    font-size:0.68rem;font-weight:800;letter-spacing:0.03em;
+    padding:3px 9px;border-radius:20px;
+  }
+  .badge.done{background:var(--done-soft);color:var(--done);}
+  .badge.now{background:var(--now-soft);color:var(--now);}
+
+  .stage-desc{color:var(--muted);font-size:0.88rem;margin:0 0 10px;}
+  .stage ul{margin:0;padding-left:18px;}
+  .stage li{font-size:0.88rem;margin-bottom:4px;color:var(--ink);}
+  .stage li:last-child{margin-bottom:0;}
+  .tool-tag{
+    display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:0.74rem;font-weight:700;padding:1px 7px;border-radius:4px;
+    margin-left:2px;
+  }
+
+  .footer-note{
+    margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:0.82rem;
+  }
+
+  @media (max-width:480px){
+    .wrap{padding:32px 16px 70px;}
+    .timeline{padding-left:36px;}
+    .stage-marker{left:-36px;width:30px;height:30px;font-size:0.78rem;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="page-head">
+    <p class="eyebrow">정병크리틱 · 개발 로드맵</p>
+    <h1>아티팩트 프로토타입에서 실서버 배포까지</h1>
+    <p class="page-desc">회원가입, DB 연동, 게시판, 실제 서버 배포를 목표로 한 단계별 진행 계획이에요.</p>
+  </div>
+
+  <div class="stack-box">
+    <p class="stack-box-title">추천 기술 스택</p>
+    <span class="stack-pill">Next.js — 프론트엔드 / API</span>
+    <span class="stack-pill">Supabase — DB · 회원가입 · 이미지 저장</span>
+    <span class="stack-pill">Vercel — 배포</span>
+    <span class="stack-pill">Discord OAuth — 로그인</span>
+  </div>
+
+  <div class="timeline">
+
+    <div class="stage done">
+      <div class="stage-marker">0</div>
+      <div class="stage-card">
+        <div class="stage-top">
+          <h3 class="stage-title">현재 상태</h3>
+          <span class="badge done">완료</span>
+        </div>
+        <p class="stage-desc">아티팩트 기반 프로토타입으로 핵심 기능을 검증한 단계.</p>
+        <ul>
+          <li>게임 등록, 점수 평가, 순위 정렬 기능 구현 완료</li>
+          <li>친구들과 실사용하며 데이터 구조 검증</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage now">
+      <div class="stage-marker">1</div>
+      <div class="stage-card">
+        <div class="stage-top">
+          <h3 class="stage-title">기술 스택 결정 &amp; 개발 환경 준비</h3>
+          <span class="badge now">다음 단계</span>
+        </div>
+        <p class="stage-desc">실제 코드 프로젝트로 전환하기 위한 준비 단계.</p>
+        <ul>
+          <li>Next.js + Supabase 조합으로 시작 <span class="tool-tag">추천</span></li>
+          <li>Node.js, git, 코드 에디터 설치</li>
+          <li>Supabase 프로젝트 생성 (무료 플랜)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">2</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">데이터베이스 스키마 설계</h3></div>
+        <p class="stage-desc">기존 저장소 구조를 실제 관계형 테이블로 옮기는 단계.</p>
+        <ul>
+          <li><b>users</b> — id, 닉네임, 가입일</li>
+          <li><b>games</b> — id, 제목, 장르, 설명, 커버이미지, 등록자, 등록일</li>
+          <li><b>reviews</b> — id, game_id, user_id, 점수, 코멘트, 작성일</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">3</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">회원가입 / 로그인 구현</h3></div>
+        <p class="stage-desc">정신병동이 디스코드 서버인 만큼 디스코드 로그인이 자연스러워요.</p>
+        <ul>
+          <li>Discord OAuth 로그인 연동</li>
+          <li>이메일/비밀번호 로그인 병행 가능</li>
+          <li>로그인 세션 관리, 보호된 페이지 설정</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">4</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">게임 평가 기능을 DB 기반으로 재구현</h3></div>
+        <p class="stage-desc">익명 이름 입력 방식에서 로그인 계정 기반 리뷰로 전환.</p>
+        <ul>
+          <li>리뷰가 실제 로그인 유저 계정에 연결</li>
+          <li>등록 · 조회 · 수정 · 삭제(CRUD) API 구현</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">5</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">게시판 기능 추가</h3></div>
+        <p class="stage-desc">정신병동 멤버들이 자유롭게 소통할 수 있는 공간.</p>
+        <ul>
+          <li><b>posts</b>, <b>comments</b> 테이블 추가</li>
+          <li>목록 / 글쓰기 / 상세 / 댓글 UI 구현</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">6</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">친구들과 베타 테스트</h3></div>
+        <p class="stage-desc">실제 배포 전 임시 환경에서 먼저 검증.</p>
+        <ul>
+          <li>로컬 또는 임시 URL로 멤버 몇 명과 테스트</li>
+          <li>버그 및 사용성 피드백 수집</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">7</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">실서버 배포</h3></div>
+        <p class="stage-desc">모두가 실제로 접속할 수 있는 주소로 오픈.</p>
+        <ul>
+          <li>Vercel에 프론트 + API 배포</li>
+          <li>Supabase는 이미 클라우드 상주 — 별도 서버 관리 불필요</li>
+          <li>필요 시 커스텀 도메인 연결</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-marker">8</div>
+      <div class="stage-card">
+        <div class="stage-top"><h3 class="stage-title">운영 &amp; 유지보수</h3></div>
+        <p class="stage-desc">서비스를 계속 건강하게 굴리기 위한 단계.</p>
+        <ul>
+          <li>게시판 신고/삭제 등 관리 기능</li>
+          <li>스팸 방지, 모바일 반응형 점검</li>
+          <li>정기 백업</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footer-note">이 규모(다중 파일, DB 스키마, 인증)부터는 아티팩트 하나가 아니라 실제 코드 프로젝트로 작업하는 걸 추천해요.</p>
+
+</div>
+</body>
+</html>
