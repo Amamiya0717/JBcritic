@@ -28,16 +28,16 @@ export default function ReviewForm({
       {error && <p className="form-error">{error}</p>}
       <div className="form-row">
         <div className="field score-field">
-          <label htmlFor="score">점수 (0~10)</label>
+          <label htmlFor="score">점수 (0~100)</label>
           <input
             className="input"
             id="score"
             name="score"
             type="number"
             min={0}
-            max={10}
-            step={0.1}
-            placeholder="8.5"
+            max={100}
+            step={1}
+            placeholder="85"
             defaultValue={initialScore}
           />
         </div>

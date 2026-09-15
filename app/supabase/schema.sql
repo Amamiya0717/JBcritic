@@ -25,7 +25,7 @@ create table public.reviews (
   id uuid primary key default gen_random_uuid(),
   game_id uuid not null references public.games (id) on delete cascade,
   user_id uuid not null references public.profiles (id) on delete cascade,
-  score numeric(3, 1) not null check (score >= 0 and score <= 10),
+  score integer not null check (score >= 0 and score <= 100),
   comment text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),

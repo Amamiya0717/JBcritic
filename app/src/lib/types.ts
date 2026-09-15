@@ -34,7 +34,7 @@ export type GameWithStats = Game & {
 export function withStats(game: Game, reviews: { score: number }[]): GameWithStats {
   const reviewCount = reviews.length;
   const avgScore = reviewCount
-    ? Math.round((reviews.reduce((sum, r) => sum + r.score, 0) / reviewCount) * 10) / 10
+    ? Math.round(reviews.reduce((sum, r) => sum + r.score, 0) / reviewCount)
     : null;
   return { ...game, avgScore, reviewCount };
 }

@@ -1,12 +1,12 @@
 export function tierOf(score: number | null): string {
   if (score == null) return "tier-none";
-  if (score >= 7.5) return "tier-good";
-  if (score >= 5.0) return "tier-mid";
+  if (score >= 75) return "tier-good";
+  if (score >= 50) return "tier-mid";
   return "tier-low";
 }
 
 export function fmtScore(score: number | null): string {
-  return score == null ? "–" : score.toFixed(1);
+  return score == null ? "–" : String(score);
 }
 
 export function fmtDate(iso: string): string {

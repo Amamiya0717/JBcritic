@@ -52,10 +52,10 @@ export async function submitReview(
 
   const scoreRaw = String(formData.get("score") || "");
   const comment = String(formData.get("comment") || "").trim();
-  const score = Math.round(parseFloat(scoreRaw) * 10) / 10;
+  const score = Math.round(parseFloat(scoreRaw));
 
-  if (scoreRaw === "" || isNaN(score) || score < 0 || score > 10) {
-    return { error: "점수는 0에서 10 사이로 입력해주세요." };
+  if (scoreRaw === "" || isNaN(score) || score < 0 || score > 100) {
+    return { error: "점수는 0에서 100 사이로 입력해주세요." };
   }
 
   const { error } = await supabase.from("reviews").upsert(
