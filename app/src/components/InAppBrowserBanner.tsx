@@ -33,12 +33,36 @@ function getServerSnapshot(): boolean {
   return false;
 }
 
+function getUserAgent(): string {
+  return navigator.userAgent || "";
+}
+function getServerUserAgent(): string {
+  return "";
+}
+
 export default function InAppBrowserBanner() {
   const shouldShow = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const ua = useSyncExternalStore(subscribe, getUserAgent, getServerUserAgent);
   const [dismissed, setDismissed] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  if (!shouldShow || dismissed) return null;
+  // TEMP DEBUG: figure out what UA Discord's in-app browser actually sends.
+  // Remove this block once we've calibrated IN_APP_PATTERNS.
+  const debugUa = ua ? (
+    <div
+      style={{
+        background: "#000",
+        color: "#0f0",
+        fontSize: "10px",
+        padding: "6px 10px",
+        wordBreak: "break-all",
+      }}
+    >
+      UA: {ua}
+    </div>
+  ) : null;
+
+  if (!shouldShow || dismissed) return <>{debugUa}</>;
 
   function dismiss() {
     setDismissed(true);
