@@ -96,10 +96,10 @@ select {
 .topbar-inner {
   max-width: var(--content-width);
   margin: 0 auto;
-  padding: 26px 20px;
+  padding: 34px 20px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
 }
 /* topbar-row1 groups logo + nav-actions so they can share one row on
@@ -118,19 +118,19 @@ select {
 .logo-text {
   color: #fff;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   letter-spacing: -0.01em;
 }
 .main-nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   order: 2;
 }
 .main-nav-link {
   color: #fff;
   font-weight: 700;
-  font-size: 1.08rem;
+  font-size: 1.25rem;
 }
 .main-nav-link:hover {
   color: var(--yellow);
@@ -142,13 +142,13 @@ select {
 .nav-search {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: #e8e8e8;
-  border-radius: 22px;
-  padding: 10px 16px;
+  border-radius: 24px;
+  padding: 12px 18px;
   flex: 1;
-  min-width: 120px;
-  max-width: 280px;
+  min-width: 90px;
+  max-width: 220px;
   order: 3;
 }
 .nav-search-icon {
@@ -159,7 +159,7 @@ select {
   border: none;
   background: none;
   outline: none;
-  font-size: 0.98rem;
+  font-size: 1.1rem;
   color: var(--text);
   width: 100%;
 }
@@ -174,8 +174,8 @@ select {
   background: transparent;
   border: 1.5px solid transparent;
   color: #ccc;
-  padding: 10px 18px;
-  font-size: 0.88rem;
+  padding: 12px 22px;
+  font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;

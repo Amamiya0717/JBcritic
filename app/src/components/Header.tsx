@@ -41,8 +41,8 @@ export default async function Header() {
                       aria-label="마이페이지 메뉴"
                     >
                       <svg
-                        width="38"
-                        height="38"
+                        width="44"
+                        height="44"
                         viewBox="0 0 40 40"
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
@@ -99,8 +99,8 @@ export default async function Header() {
           <form action="/" method="GET" className="nav-search">
             <svg
               className="nav-search-icon"
-              width="17"
-              height="17"
+              width="19"
+              height="19"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
