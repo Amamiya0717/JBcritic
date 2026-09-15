@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import InAppBrowserBanner from "@/components/InAppBrowserBanner";
 
 export const metadata: Metadata = {
   title: "JBcritic",
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
 export default function RootLayout(props: LayoutProps<"/">) {
   return (
     <html lang="ko">
-      <body>{props.children}</body>
+      <body>
+        <InAppBrowserBanner />
+        {props.children}
+      </body>
     </html>
   );
 }

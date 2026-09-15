@@ -45,6 +45,48 @@ select {
   font-family: inherit;
 }
 
+/* in-app browser banner */
+.iab-banner {
+  background: var(--yellow);
+  color: var(--black);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.iab-banner p {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
+  max-width: 640px;
+}
+.iab-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.iab-banner .btn-gold {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+}
+.iab-banner .btn-gold:hover {
+  background: #000;
+}
+.iab-banner .btn-text {
+  color: var(--black);
+  font-size: 0.75rem;
+}
+.iab-banner .btn-text:hover {
+  color: #000;
+}
+
 /* header */
 .topbar {
   background: var(--black);
