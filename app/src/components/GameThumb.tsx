@@ -12,11 +12,30 @@ export default function GameThumb({
   coverUrl: string | null;
   color: string;
   title: string;
-  variant?: "list" | "detail";
+  variant?: "list" | "detail" | "wide";
 }) {
   const [failed, setFailed] = useState(false);
-  const size =
-    variant === "list" ? { width: 44, height: 60 } : { width: 110, height: 150 };
+
+  if (variant === "wide") {
+    if (!coverUrl || failed) {
+      return (
+        <div className="wide-thumb-fallback" style={{ background: color || "#666666" }}>
+          {initials(title)}
+        </div>
+      );
+    }
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        className="wide-thumb-img"
+        src={coverUrl}
+        alt=""
+        onError={() => setFailed(true)}
+      />
+    );
+  }
+
+  const size = variant === "list" ? { width: 44, height: 60 } : { width: 110, height: 150 };
 
   if (!coverUrl || failed) {
     return (
