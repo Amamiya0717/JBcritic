@@ -23,8 +23,8 @@ export default async function Header() {
       <div className="topbar">
         <div className="topbar-inner">
           <Link href="/" className="logo">
-            <div className="logo-mark">정</div>
-            <div className="logo-text">정병크리틱</div>
+            <div className="logo-mark">JB</div>
+            <div className="logo-text">JBcritic</div>
           </Link>
           <div className="nav">
             <Link href="/" className="nav-btn">
