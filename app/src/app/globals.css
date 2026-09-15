@@ -101,11 +101,18 @@ select {
   gap: 20px;
   flex-wrap: wrap;
 }
+/* topbar-row1 groups logo + nav-actions so they can share one row on
+   mobile; "display: contents" keeps it invisible to the desktop layout
+   so those two still act as ordinary flex items of .topbar-inner. */
+.topbar-row1 {
+  display: contents;
+}
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  order: 1;
 }
 .logo-text {
   color: #fff;
@@ -117,6 +124,7 @@ select {
   display: flex;
   align-items: center;
   gap: 20px;
+  order: 2;
 }
 .main-nav-link {
   color: #fff;
@@ -140,6 +148,7 @@ select {
   flex: 1;
   min-width: 120px;
   max-width: 260px;
+  order: 3;
 }
 .nav-search-icon {
   color: #777;
@@ -158,6 +167,7 @@ select {
   gap: 6px;
   align-items: center;
   flex-shrink: 0;
+  order: 4;
 }
 .nav-btn {
   background: transparent;
@@ -694,7 +704,15 @@ textarea {
 @media (max-width: 520px) {
   .topbar-inner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+  }
+  .topbar-row1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-search {
+    max-width: none;
   }
   .detail-card {
     flex-direction: column;

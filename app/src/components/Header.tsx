@@ -22,10 +22,65 @@ export default async function Header() {
     <>
       <div className="topbar">
         <div className="topbar-inner">
-          <Link href="/" className="logo">
-            <Logo />
-            <div className="logo-text">JBcritic</div>
-          </Link>
+          <div className="topbar-row1">
+            <Link href="/" className="logo">
+              <Logo />
+              <div className="logo-text">JBcritic</div>
+            </Link>
+
+            <div className="nav-actions">
+              {user ? (
+                <>
+                  <Link href="/games/new" className="nav-btn primary">
+                    게임 추가
+                  </Link>
+                  <div className="profile-menu-wrap">
+                    <button
+                      type="button"
+                      className="profile-icon-btn"
+                      aria-label="마이페이지 메뉴"
+                    >
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 40 40"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <defs>
+                          <clipPath id="avatarClip">
+                            <circle cx="20" cy="20" r="18" />
+                          </clipPath>
+                        </defs>
+                        <circle cx="20" cy="20" r="18" fill="#ffffff" />
+                        <g clipPath="url(#avatarClip)">
+                          <circle cx="20" cy="16" r="6.5" fill="#0d0d0d" />
+                          <ellipse cx="20" cy="34" rx="13" ry="11" fill="#0d0d0d" />
+                        </g>
+                      </svg>
+                    </button>
+                    <div className="profile-menu">
+                      <Link href="/mypage" className="profile-menu-item">
+                        내 리뷰·작성 글
+                      </Link>
+                      <Link href="/mypage/account" className="profile-menu-item">
+                        내 계정
+                      </Link>
+                      <form action={signOut}>
+                        <button type="submit" className="profile-menu-item">
+                          로그아웃
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Link href="/login" className="nav-btn primary">
+                  Register
+                </Link>
+              )}
+            </div>
+          </div>
 
           <nav className="main-nav">
             {CATEGORIES.map((c) =>
@@ -67,59 +122,6 @@ export default async function Header() {
               aria-label="게임 검색"
             />
           </form>
-
-          <div className="nav-actions">
-            {user ? (
-              <>
-                <Link href="/games/new" className="nav-btn primary">
-                  게임 추가
-                </Link>
-                <div className="profile-menu-wrap">
-                  <button
-                    type="button"
-                    className="profile-icon-btn"
-                    aria-label="마이페이지 메뉴"
-                  >
-                    <svg
-                      width="32"
-                      height="32"
-                      viewBox="0 0 40 40"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <defs>
-                        <clipPath id="avatarClip">
-                          <circle cx="20" cy="20" r="18" />
-                        </clipPath>
-                      </defs>
-                      <circle cx="20" cy="20" r="18" fill="#ffffff" />
-                      <g clipPath="url(#avatarClip)">
-                        <circle cx="20" cy="16" r="6.5" fill="#0d0d0d" />
-                        <ellipse cx="20" cy="34" rx="13" ry="11" fill="#0d0d0d" />
-                      </g>
-                    </svg>
-                  </button>
-                  <div className="profile-menu">
-                    <Link href="/mypage" className="profile-menu-item">
-                      내 리뷰·작성 글
-                    </Link>
-                    <Link href="/mypage/account" className="profile-menu-item">
-                      내 계정
-                    </Link>
-                    <form action={signOut}>
-                      <button type="submit" className="profile-menu-item">
-                        로그아웃
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <Link href="/login" className="nav-btn primary">
-                Register
-              </Link>
-            )}
-          </div>
         </div>
       </div>
       <div className="subbar">
