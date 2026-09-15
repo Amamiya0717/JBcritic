@@ -5,6 +5,7 @@ import Logo from "@/components/Logo";
 
 const CATEGORIES = [
   { label: "Games", href: "/" },
+  { label: "Anime", href: null },
   { label: "Movies", href: null },
   { label: "Music", href: null },
   { label: "Lives", href: null },
@@ -16,16 +17,6 @@ export default async function Header() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  let nickname: string | null = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("nickname")
-      .eq("id", user.id)
-      .single();
-    nickname = profile?.nickname ?? null;
-  }
 
   return (
     <>
@@ -84,7 +75,7 @@ export default async function Header() {
                   게임 추가
                 </Link>
                 <Link href="/mypage" className="nav-user">
-                  {nickname}
+                  마이페이지
                 </Link>
                 <form action={signOut}>
                   <button type="submit" className="nav-btn">
