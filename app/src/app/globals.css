@@ -597,17 +597,26 @@ textarea {
   margin: 0;
   white-space: pre-wrap;
 }
-.review-del {
+.review-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+}
+.review-del,
+.review-edit {
   background: none;
   border: none;
   color: var(--text-muted);
   font-size: 0.72rem;
   cursor: pointer;
-  padding: 4px 0 0;
+  padding: 0;
   font-weight: 700;
 }
 .review-del:hover {
   color: var(--red-dark);
+}
+.review-edit:hover {
+  color: var(--text);
 }
 
 /* add form / login form */

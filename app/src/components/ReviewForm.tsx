@@ -7,10 +7,14 @@ export default function ReviewForm({
   gameId,
   initialScore,
   initialComment,
+  onSuccess,
+  onCancel,
 }: {
   gameId: string;
   initialScore?: number;
   initialComment?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
 }) {
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
@@ -20,6 +24,7 @@ export default function ReviewForm({
     startTransition(async () => {
       const result = await submitReview(gameId, formData);
       if (result?.error) setError(result.error);
+      else onSuccess?.();
     });
   }
 
@@ -53,8 +58,18 @@ export default function ReviewForm({
         />
       </div>
       <button type="submit" className="btn btn-gold" disabled={pending}>
-        {pending ? "등록 중..." : initialScore != null ? "평가 수정" : "평가 등록"}
+        {pending ? "저장 중..." : initialScore != null ? "평가 수정" : "평가 등록"}
       </button>
+      {onCancel && (
+        <button
+          type="button"
+          className="btn-text"
+          style={{ marginLeft: 10 }}
+          onClick={onCancel}
+        >
+          취소
+        </button>
+      )}
     </form>
   );
 }

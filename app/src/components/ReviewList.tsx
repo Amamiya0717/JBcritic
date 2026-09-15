@@ -1,7 +1,8 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import ScoreBox from "@/components/ScoreBox";
+import ReviewForm from "@/components/ReviewForm";
 import { fmtDate } from "@/lib/format";
 import { deleteReview } from "@/lib/actions";
 import type { Review } from "@/lib/types";
@@ -16,6 +17,7 @@ export default function ReviewList({
   currentUserId: string | null;
 }) {
   const [pending, startTransition] = useTransition();
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const sorted = [...reviews].sort(
     (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -38,29 +40,52 @@ export default function ReviewList({
 
   return (
     <div>
-      {sorted.map((r) => (
-        <div key={r.id} className="review-item">
-          <ScoreBox score={r.score} size="sm" />
-          <div className="review-body">
-            <div className="review-top">
-              <span className="review-member">
-                {r.profiles?.nickname ?? "탈퇴한 유저"}
-              </span>
-              <span className="review-date">{fmtDate(r.created_at)}</span>
+      {sorted.map((r) => {
+        if (editingId === r.id) {
+          return (
+            <div key={r.id} className="review-item">
+              <div className="review-body">
+                <ReviewForm
+                  gameId={gameId}
+                  initialScore={r.score}
+                  initialComment={r.comment ?? undefined}
+                  onSuccess={() => setEditingId(null)}
+                  onCancel={() => setEditingId(null)}
+                />
+              </div>
             </div>
-            {r.comment && <p className="review-comment">{r.comment}</p>}
-            {currentUserId === r.user_id && (
-              <button
-                className="review-del"
-                disabled={pending}
-                onClick={() => handleDelete(r.id)}
-              >
-                삭제
-              </button>
-            )}
+          );
+        }
+
+        return (
+          <div key={r.id} className="review-item">
+            <ScoreBox score={r.score} size="sm" />
+            <div className="review-body">
+              <div className="review-top">
+                <span className="review-member">
+                  {r.profiles?.nickname ?? "탈퇴한 유저"}
+                </span>
+                <span className="review-date">{fmtDate(r.created_at)}</span>
+              </div>
+              {r.comment && <p className="review-comment">{r.comment}</p>}
+              {currentUserId === r.user_id && (
+                <div className="review-actions">
+                  <button className="review-edit" onClick={() => setEditingId(r.id)}>
+                    수정
+                  </button>
+                  <button
+                    className="review-del"
+                    disabled={pending}
+                    onClick={() => handleDelete(r.id)}
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

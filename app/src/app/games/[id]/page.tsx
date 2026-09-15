@@ -63,20 +63,22 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
           </div>
         </div>
 
-        <h3 className="section-title">{myReview ? "내 평가 수정하기" : "평가 남기기"}</h3>
-        {user ? (
-          <ReviewForm
-            gameId={id}
-            initialScore={myReview?.score}
-            initialComment={myReview?.comment ?? undefined}
-          />
-        ) : (
-          <div className="empty-state" style={{ marginBottom: 24 }}>
-            <p>평가를 남기려면 로그인해주세요.</p>
-            <Link href="/login" className="btn btn-gold">
-              로그인
-            </Link>
-          </div>
+        {!user && (
+          <>
+            <h3 className="section-title">평가 남기기</h3>
+            <div className="empty-state" style={{ marginBottom: 24 }}>
+              <p>평가를 남기려면 로그인해주세요.</p>
+              <Link href="/login" className="btn btn-gold">
+                로그인
+              </Link>
+            </div>
+          </>
+        )}
+        {user && !myReview && (
+          <>
+            <h3 className="section-title">평가 남기기</h3>
+            <ReviewForm gameId={id} />
+          </>
         )}
 
         <h3 className="section-title">유저 평가 ({reviewList.length})</h3>
