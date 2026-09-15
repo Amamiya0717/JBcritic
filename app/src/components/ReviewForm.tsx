@@ -48,12 +48,13 @@ export default function ReviewForm({
         </div>
       </div>
       <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="comment">코멘트</label>
+        <label htmlFor="comment">리뷰</label>
         <textarea
-          className="input"
+          className="input review-textarea"
           id="comment"
           name="comment"
-          placeholder="한줄평을 남겨주세요"
+          rows={5}
+          placeholder="이 게임에 대한 생각을 자유롭게 남겨주세요"
           defaultValue={initialComment}
         />
       </div>

@@ -557,6 +557,9 @@ textarea {
   min-height: 50px;
   width: 100%;
 }
+.review-textarea {
+  min-height: 110px;
+}
 .form-error {
   color: var(--red-dark);
   font-size: 0.82rem;
@@ -594,6 +597,7 @@ textarea {
 }
 .review-comment {
   font-size: 0.87rem;
+  line-height: 1.7;
   margin: 0;
   white-space: pre-wrap;
 }
