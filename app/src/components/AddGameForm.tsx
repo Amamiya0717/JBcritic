@@ -83,6 +83,7 @@ export default function AddGameForm() {
             <img
               src={coverUrl}
               alt="미리보기"
+              referrerPolicy="no-referrer"
               onError={() => setCoverFailed(true)}
               style={{
                 width: 80,
