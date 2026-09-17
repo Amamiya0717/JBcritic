@@ -30,7 +30,6 @@ export default function GameThumb({
         className="wide-thumb-img"
         src={coverUrl}
         alt=""
-        referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
       />
     );
@@ -58,7 +57,6 @@ export default function GameThumb({
       alt=""
       width={size.width}
       height={size.height}
-      referrerPolicy="no-referrer"
       style={{
         width: size.width,
         height: size.height,
