@@ -14,6 +14,13 @@ type MyReview = {
   games: { title: string } | null;
 };
 
+type MyPost = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+};
+
 export default async function MyPage() {
   const supabase = await createClient();
   const {
@@ -43,6 +50,14 @@ export default async function MyPage() {
     .order("created_at", { ascending: false });
 
   const myReviews = (reviews ?? []) as unknown as MyReview[];
+
+  const { data: posts } = await supabase
+    .from("posts")
+    .select("id, title, content, created_at")
+    .eq("author_id", user.id)
+    .order("created_at", { ascending: false });
+
+  const myPosts = (posts ?? []) as MyPost[];
 
   return (
     <>
@@ -86,11 +101,31 @@ export default async function MyPage() {
           className="section-title"
           style={{ fontSize: "0.78rem", marginTop: 24 }}
         >
-          내가 쓴 게시판 글
+          내가 쓴 게시판 글 ({myPosts.length})
         </h4>
-        <div className="empty-state">
-          <p>준비 중이에요.</p>
-        </div>
+        {myPosts.length === 0 ? (
+          <div className="empty-state">
+            <p>아직 작성한 글이 없어요.</p>
+          </div>
+        ) : (
+          <div>
+            {myPosts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/board/${p.id}`}
+                className="review-item review-item-link"
+              >
+                <div className="review-body">
+                  <div className="review-top">
+                    <span className="review-member">{p.title}</span>
+                    <span className="review-date">{fmtDate(p.created_at)}</span>
+                  </div>
+                  <p className="review-comment my-review-excerpt">{p.content}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );

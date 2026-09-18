@@ -154,6 +154,127 @@ export async function deleteReview(
   return { error: null };
 }
 
+export async function createPost(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const title = String(formData.get("title") || "").trim();
+  const content = String(formData.get("content") || "").trim();
+
+  if (!title) return { error: "제목을 입력해주세요." };
+  if (!content) return { error: "내용을 입력해주세요." };
+
+  const { data, error } = await supabase
+    .from("posts")
+    .insert({ title, content, author_id: user.id })
+    .select("id")
+    .single();
+
+  if (error) return { error: "게시글 저장에 실패했어요: " + error.message };
+
+  revalidatePath("/");
+  revalidatePath("/board");
+  redirect(`/board/${data.id}`);
+}
+
+export async function updatePost(
+  postId: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const title = String(formData.get("title") || "").trim();
+  const content = String(formData.get("content") || "").trim();
+
+  if (!title) return { error: "제목을 입력해주세요." };
+  if (!content) return { error: "내용을 입력해주세요." };
+
+  const { error } = await supabase
+    .from("posts")
+    .update({ title, content })
+    .eq("id", postId)
+    .eq("author_id", user.id);
+
+  if (error) return { error: "게시글 수정에 실패했어요: " + error.message };
+
+  revalidatePath(`/board/${postId}`);
+  revalidatePath("/board");
+  revalidatePath("/");
+  redirect(`/board/${postId}`);
+}
+
+export async function deletePost(postId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const { error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", postId)
+    .eq("author_id", user.id);
+
+  if (error) return { error: "삭제에 실패했어요: " + error.message };
+
+  revalidatePath("/board");
+  revalidatePath("/");
+  redirect("/board");
+}
+
+export async function addComment(
+  postId: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const content = String(formData.get("content") || "").trim();
+  if (!content) return { error: "댓글 내용을 입력해주세요." };
+
+  const { error } = await supabase
+    .from("comments")
+    .insert({ post_id: postId, user_id: user.id, content });
+
+  if (error) return { error: "댓글 저장에 실패했어요: " + error.message };
+
+  revalidatePath(`/board/${postId}`);
+  return { error: null };
+}
+
+export async function deleteComment(
+  postId: string,
+  commentId: string
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId)
+    .eq("user_id", user.id);
+
+  if (error) return { error: "삭제에 실패했어요: " + error.message };
+
+  revalidatePath(`/board/${postId}`);
+  return { error: null };
+}
+
 export async function updateNickname(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const {
