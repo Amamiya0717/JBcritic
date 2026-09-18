@@ -45,6 +45,18 @@ export function fmtDate(iso: string): string {
   return `${d.getFullYear()}.${mm}.${dd}`;
 }
 
+// 24시간 이내면 시:분(24시간제), 그 이전이면 fmtDate와 동일한 연/월/일 형식.
+export function fmtRecentDate(iso: string): string {
+  const d = new Date(iso);
+  const diffMs = Date.now() - d.getTime();
+  if (diffMs >= 0 && diffMs < 24 * 60 * 60 * 1000) {
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+  }
+  return fmtDate(iso);
+}
+
 export function initials(title: string): string {
   const t = (title || "").trim();
   return t ? t.charAt(0).toUpperCase() : "?";

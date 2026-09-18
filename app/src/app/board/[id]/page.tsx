@@ -5,7 +5,7 @@ import CommentForm from "@/components/CommentForm";
 import CommentList from "@/components/CommentList";
 import DeletePostButton from "@/components/DeletePostButton";
 import { createClient } from "@/lib/supabase/server";
-import { fmtDate } from "@/lib/format";
+import { fmtRecentDate } from "@/lib/format";
 import type { Comment, Post, Profile } from "@/lib/types";
 
 export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
@@ -45,7 +45,7 @@ export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
           <h2 className="detail-title">{post.title}</h2>
           <div className="detail-meta">
             <span className="meta-text">{author?.nickname ?? "탈퇴한 유저"}</span>
-            <span className="meta-text">{fmtDate(post.created_at)} 작성</span>
+            <span className="meta-text">{fmtRecentDate(post.created_at)} 작성</span>
           </div>
           <p className="detail-desc" style={{ whiteSpace: "pre-wrap" }}>
             {post.content}

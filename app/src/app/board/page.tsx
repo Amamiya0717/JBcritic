@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import { createClient } from "@/lib/supabase/server";
-import { fmtDate } from "@/lib/format";
+import { fmtRecentDate } from "@/lib/format";
 import type { Post, Profile } from "@/lib/types";
 
 type PostRow = Post & {
@@ -42,13 +42,12 @@ export default async function BoardPage() {
               <Link key={p.id} href={`/board/${p.id}`} className="review-item review-item-link">
                 <div className="review-body">
                   <div className="review-top">
-                    <span className="review-member">{p.title}</span>
-                    <span className="review-date">{fmtDate(p.created_at)}</span>
+                    <span className="review-member">
+                      {p.title} <span className="meta-text">[{p.comments.length}]</span>
+                    </span>
+                    <span className="review-date">{fmtRecentDate(p.created_at)}</span>
                   </div>
-                  <p className="review-comment my-review-excerpt">{p.content}</p>
-                  <span className="meta-text">
-                    {p.profiles?.nickname ?? "탈퇴한 유저"} · 댓글 {p.comments.length}건
-                  </span>
+                  <span className="meta-text">{p.profiles?.nickname ?? "탈퇴한 유저"}</span>
                 </div>
               </Link>
             ))}

@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import MyPageTabs from "@/components/MyPageTabs";
 import ScoreBox from "@/components/ScoreBox";
 import { createClient } from "@/lib/supabase/server";
-import { fmtDate } from "@/lib/format";
+import { fmtDate, fmtRecentDate } from "@/lib/format";
 
 type MyReview = {
   id: string;
@@ -17,8 +17,8 @@ type MyReview = {
 type MyPost = {
   id: string;
   title: string;
-  content: string;
   created_at: string;
+  comments: { id: string }[];
 };
 
 export default async function MyPage() {
@@ -53,7 +53,7 @@ export default async function MyPage() {
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, title, content, created_at")
+    .select("id, title, created_at, comments(id)")
     .eq("author_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -117,10 +117,11 @@ export default async function MyPage() {
               >
                 <div className="review-body">
                   <div className="review-top">
-                    <span className="review-member">{p.title}</span>
-                    <span className="review-date">{fmtDate(p.created_at)}</span>
+                    <span className="review-member">
+                      {p.title} <span className="meta-text">[{p.comments.length}]</span>
+                    </span>
+                    <span className="review-date">{fmtRecentDate(p.created_at)}</span>
                   </div>
-                  <p className="review-comment my-review-excerpt">{p.content}</p>
                 </div>
               </Link>
             ))}
