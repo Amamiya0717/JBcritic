@@ -38,21 +38,38 @@ export function tierDistribution(scores: number[]): {
   };
 }
 
-export function fmtDate(iso: string): string {
-  const d = new Date(iso);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}.${mm}.${dd}`;
+// 서버 실행 환경(Vercel은 UTC)과 무관하게 항상 한국 시간(KST) 기준으로 계산한다.
+function kstParts(iso: string) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(iso));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return {
+    year: get("year"),
+    month: get("month"),
+    day: get("day"),
+    hour: get("hour"),
+    minute: get("minute"),
+  };
 }
 
-// 24시간 이내면 시:분(24시간제), 그 이전이면 fmtDate와 동일한 연/월/일 형식.
+export function fmtDate(iso: string): string {
+  const { year, month, day } = kstParts(iso);
+  return `${year}.${month}.${day}`;
+}
+
+// 24시간 이내면 시:분(24시간제, KST), 그 이전이면 fmtDate와 동일한 연/월/일 형식.
 export function fmtRecentDate(iso: string): string {
-  const d = new Date(iso);
-  const diffMs = Date.now() - d.getTime();
+  const diffMs = Date.now() - new Date(iso).getTime();
   if (diffMs >= 0 && diffMs < 24 * 60 * 60 * 1000) {
-    const hh = String(d.getHours()).padStart(2, "0");
-    const mm = String(d.getMinutes()).padStart(2, "0");
-    return `${hh}:${mm}`;
+    const { hour, minute } = kstParts(iso);
+    return `${hour}:${minute}`;
   }
   return fmtDate(iso);
 }
