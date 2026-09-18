@@ -1,13 +1,25 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addGame } from "@/lib/actions";
+import { addGame, updateGame } from "@/lib/actions";
 
 const SWATCHES = ["#66cc33", "#ffcc33", "#ff0000", "#3b7bd9", "#8c4bc7", "#666666"];
 
-export default function AddGameForm() {
-  const [color, setColor] = useState(SWATCHES[0]);
-  const [coverUrl, setCoverUrl] = useState("");
+export default function AddGameForm({
+  gameId,
+  initial,
+}: {
+  gameId?: string;
+  initial?: {
+    title: string;
+    genre: string | null;
+    description: string | null;
+    coverUrl: string | null;
+    color: string;
+  };
+}) {
+  const [color, setColor] = useState(initial?.color ?? SWATCHES[0]);
+  const [coverUrl, setCoverUrl] = useState(initial?.coverUrl ?? "");
   const [coverFailed, setCoverFailed] = useState(false);
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
@@ -15,7 +27,9 @@ export default function AddGameForm() {
   function handleSubmit(formData: FormData) {
     setError("");
     startTransition(async () => {
-      const result = await addGame(formData);
+      const result = gameId
+        ? await updateGame(gameId, formData)
+        : await addGame(formData);
       if (result?.error) setError(result.error);
     });
   }
@@ -32,6 +46,7 @@ export default function AddGameForm() {
           name="title"
           type="text"
           placeholder="예: 리썰컴퍼니"
+          defaultValue={initial?.title}
         />
       </div>
 
@@ -43,6 +58,7 @@ export default function AddGameForm() {
           name="genre"
           type="text"
           placeholder="예: 협동 호러"
+          defaultValue={initial?.genre ?? undefined}
         />
       </div>
 
@@ -53,6 +69,7 @@ export default function AddGameForm() {
           id="description"
           name="description"
           placeholder="어떤 게임인지 짧게 적어주세요"
+          defaultValue={initial?.description ?? undefined}
         />
       </div>
 
@@ -115,7 +132,7 @@ export default function AddGameForm() {
       </div>
 
       <button type="submit" className="btn btn-gold" disabled={pending}>
-        {pending ? "등록 중..." : "등록하기"}
+        {pending ? "저장 중..." : gameId ? "수정하기" : "등록하기"}
       </button>
     </form>
   );

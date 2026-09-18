@@ -40,6 +40,62 @@ export async function addGame(formData: FormData): Promise<ActionResult> {
   redirect(`/games/${data.id}`);
 }
 
+export async function updateGame(
+  gameId: string,
+  formData: FormData
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const title = String(formData.get("title") || "").trim();
+  const genre = String(formData.get("genre") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const coverUrl = String(formData.get("coverUrl") || "").trim();
+  const color = String(formData.get("color") || "#66cc33");
+
+  if (!title) return { error: "게임 제목을 입력해주세요." };
+
+  const { error } = await supabase
+    .from("games")
+    .update({
+      title,
+      genre: genre || null,
+      description: description || null,
+      cover_url: coverUrl || null,
+      color,
+    })
+    .eq("id", gameId)
+    .eq("added_by", user.id);
+
+  if (error) return { error: "게임 수정에 실패했어요: " + error.message };
+
+  revalidatePath(`/games/${gameId}`);
+  revalidatePath("/");
+  redirect(`/games/${gameId}`);
+}
+
+export async function deleteGame(gameId: string): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const { error } = await supabase
+    .from("games")
+    .delete()
+    .eq("id", gameId)
+    .eq("added_by", user.id);
+
+  if (error) return { error: "삭제에 실패했어요: " + error.message };
+
+  revalidatePath("/");
+  redirect("/");
+}
+
 export async function submitReview(
   gameId: string,
   formData: FormData

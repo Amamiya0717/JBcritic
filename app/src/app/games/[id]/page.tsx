@@ -5,6 +5,7 @@ import ScoreBox from "@/components/ScoreBox";
 import GameThumb from "@/components/GameThumb";
 import ReviewForm from "@/components/ReviewForm";
 import ReviewList from "@/components/ReviewList";
+import DeleteGameButton from "@/components/DeleteGameButton";
 import { createClient } from "@/lib/supabase/server";
 import { fmtDate } from "@/lib/format";
 import { withStats, type Game, type Review } from "@/lib/types";
@@ -59,6 +60,14 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
             </div>
             {stats.description && (
               <p className="detail-desc">{stats.description}</p>
+            )}
+            {user?.id === stats.added_by && (
+              <div className="review-actions" style={{ marginTop: 10 }}>
+                <Link href={`/games/${id}/edit`} className="review-edit">
+                  수정
+                </Link>
+                <DeleteGameButton gameId={id} />
+              </div>
             )}
           </div>
         </div>
