@@ -35,7 +35,7 @@ export default async function HomePage() {
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("*, profiles(nickname), comments(id)")
+    .select("*, profiles!posts_author_id_fkey(nickname), comments(id)")
     .order("created_at", { ascending: false })
     .limit(RECENT_POSTS_COUNT);
 

@@ -19,7 +19,7 @@ export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
 
   const { data: post } = await supabase
     .from("posts")
-    .select("*, profiles(nickname)")
+    .select("*, profiles!posts_author_id_fkey(nickname)")
     .eq("id", id)
     .single();
 

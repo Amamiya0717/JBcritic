@@ -13,7 +13,7 @@ export default async function BoardPage() {
   const supabase = await createClient();
   const { data: posts } = await supabase
     .from("posts")
-    .select("*, profiles(nickname), comments(id)")
+    .select("*, profiles!posts_author_id_fkey(nickname), comments(id)")
     .order("created_at", { ascending: false });
 
   const list = (posts ?? []) as PostRow[];
