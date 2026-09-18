@@ -8,6 +8,8 @@ import type { GameWithStats } from "@/lib/types";
 
 type SortKey = "score-desc" | "score-asc" | "recent" | "reviews" | "title";
 
+const PAGE_SIZE = 12;
+
 export default function GameListClient({
   games,
   initialSearch = "",
@@ -17,6 +19,7 @@ export default function GameListClient({
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortKey>("score-desc");
+  const [showAll, setShowAll] = useState(false);
 
   const list = useMemo(() => {
     let result = games;
@@ -40,6 +43,8 @@ export default function GameListClient({
     });
     return result;
   }, [games, search, sort]);
+
+  const visibleList = showAll ? list : list.slice(0, PAGE_SIZE);
 
   return (
     <div className="page">
@@ -78,19 +83,32 @@ export default function GameListClient({
           </div>
         )
       ) : (
-        list.map((g) => (
-          <Link key={g.id} href={`/games/${g.id}`} className="game-row">
-            <GameThumb coverUrl={g.cover_url} color={g.color} title={g.title} />
-            <ScoreBox score={g.avgScore} size="md" />
-            <div className="game-row-body">
-              <p className="game-title">{g.title}</p>
-              <div className="game-meta">
-                {g.genre && <span className="tag">{g.genre}</span>}
-                <span className="meta-text">리뷰 {g.reviewCount}건</span>
+        <>
+          {visibleList.map((g) => (
+            <Link key={g.id} href={`/games/${g.id}`} className="game-row">
+              <GameThumb coverUrl={g.cover_url} color={g.color} title={g.title} />
+              <ScoreBox score={g.avgScore} size="md" />
+              <div className="game-row-body">
+                <p className="game-title">{g.title}</p>
+                <div className="game-meta">
+                  {g.genre && <span className="tag">{g.genre}</span>}
+                  <span className="meta-text">리뷰 {g.reviewCount}건</span>
+                </div>
               </div>
+            </Link>
+          ))}
+          {!showAll && list.length > PAGE_SIZE && (
+            <div className="load-more">
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setShowAll(true)}
+              >
+                전체보기 ({list.length})
+              </button>
             </div>
-          </Link>
-        ))
+          )}
+        </>
       )}
     </div>
   );

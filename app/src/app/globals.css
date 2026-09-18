@@ -604,6 +604,12 @@ textarea:focus {
   color: var(--text);
 }
 
+.load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
 /* detail */
 .back-link {
   display: inline-block;
