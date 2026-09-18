@@ -13,9 +13,11 @@ const PAGE_SIZE = 12;
 export default function GameListClient({
   games,
   initialSearch = "",
+  showSearch = true,
 }: {
   games: GameWithStats[];
   initialSearch?: string;
+  showSearch?: boolean;
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortKey>("score-desc");
@@ -49,13 +51,15 @@ export default function GameListClient({
   return (
     <div className="page">
       <div className="toolbar">
-        <input
-          className="input"
-          type="text"
-          placeholder="게임 제목이나 장르로 검색"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        {showSearch && (
+          <input
+            className="input"
+            type="text"
+            placeholder="게임 제목이나 장르로 검색"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        )}
         <select
           className="select"
           value={sort}

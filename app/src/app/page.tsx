@@ -7,11 +7,7 @@ import { withStats, type Game } from "@/lib/types";
 
 const SPOTLIGHT_COUNT = 8;
 
-export default async function HomePage(props: PageProps<"/">) {
-  const searchParams = await props.searchParams;
-  const qRaw = searchParams.q;
-  const initialSearch = typeof qRaw === "string" ? qRaw : "";
-
+export default async function HomePage() {
   const supabase = await createClient();
   const { data: games } = await supabase
     .from("games")
@@ -50,7 +46,7 @@ export default async function HomePage(props: PageProps<"/">) {
           </div>
         </section>
       </div>
-      <GameListClient games={list} initialSearch={initialSearch} />
+      <GameListClient games={list} showSearch={false} />
     </>
   );
 }
