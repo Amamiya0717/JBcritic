@@ -9,7 +9,7 @@ const CATEGORIES = [
   { label: "Movies", href: null },
   { label: "Music", href: null },
   { label: "Lives", href: null },
-  { label: "News", href: "/board" },
+  { label: "Board", href: "/board" },
 ] as const;
 
 export default async function Header() {
