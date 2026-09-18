@@ -35,6 +35,9 @@ export type Post = {
   updated_at: string;
 };
 
+export const POST_TITLE_MAX_LENGTH = 100;
+export const POST_CONTENT_MAX_LENGTH = 5000;
+
 export type Comment = {
   id: string;
   post_id: string;

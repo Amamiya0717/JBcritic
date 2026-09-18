@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { POST_CONTENT_MAX_LENGTH, POST_TITLE_MAX_LENGTH } from "@/lib/types";
 
 export type ActionResult = { error: string } | { error: null };
 
@@ -165,7 +166,11 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   const content = String(formData.get("content") || "").trim();
 
   if (!title) return { error: "제목을 입력해주세요." };
+  if (title.length > POST_TITLE_MAX_LENGTH)
+    return { error: `제목은 ${POST_TITLE_MAX_LENGTH}자 이내로 입력해주세요.` };
   if (!content) return { error: "내용을 입력해주세요." };
+  if (content.length > POST_CONTENT_MAX_LENGTH)
+    return { error: `내용은 ${POST_CONTENT_MAX_LENGTH}자 이내로 입력해주세요.` };
 
   const { data, error } = await supabase
     .from("posts")
@@ -194,7 +199,11 @@ export async function updatePost(
   const content = String(formData.get("content") || "").trim();
 
   if (!title) return { error: "제목을 입력해주세요." };
+  if (title.length > POST_TITLE_MAX_LENGTH)
+    return { error: `제목은 ${POST_TITLE_MAX_LENGTH}자 이내로 입력해주세요.` };
   if (!content) return { error: "내용을 입력해주세요." };
+  if (content.length > POST_CONTENT_MAX_LENGTH)
+    return { error: `내용은 ${POST_CONTENT_MAX_LENGTH}자 이내로 입력해주세요.` };
 
   const { error } = await supabase
     .from("posts")

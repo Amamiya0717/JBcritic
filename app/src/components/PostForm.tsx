@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createPost, updatePost } from "@/lib/actions";
+import { POST_CONTENT_MAX_LENGTH, POST_TITLE_MAX_LENGTH } from "@/lib/types";
 
 export default function PostForm({
   postId,
@@ -35,6 +36,7 @@ export default function PostForm({
           name="title"
           type="text"
           placeholder="제목을 입력하세요"
+          maxLength={POST_TITLE_MAX_LENGTH}
           defaultValue={initial?.title}
         />
       </div>
@@ -47,6 +49,7 @@ export default function PostForm({
           name="content"
           rows={8}
           placeholder="내용을 입력하세요"
+          maxLength={POST_CONTENT_MAX_LENGTH}
           defaultValue={initial?.content}
         />
       </div>
