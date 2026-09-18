@@ -96,7 +96,7 @@ export default async function Header() {
             )}
           </nav>
 
-          <form action="/" method="GET" className="nav-search">
+          <form action="/search" method="GET" className="nav-search">
             <svg
               className="nav-search-icon"
               width="19"
