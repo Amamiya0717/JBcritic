@@ -4,9 +4,10 @@ import Header from "@/components/Header";
 import CommentForm from "@/components/CommentForm";
 import CommentList from "@/components/CommentList";
 import DeletePostButton from "@/components/DeletePostButton";
+import PostVoteButtons from "@/components/PostVoteButtons";
 import { createClient } from "@/lib/supabase/server";
 import { fmtRecentDate } from "@/lib/format";
-import type { Comment, Post, Profile } from "@/lib/types";
+import type { Comment, Post, PostVote, Profile } from "@/lib/types";
 
 export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
   const { id } = await props.params;
@@ -24,12 +25,24 @@ export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
 
   if (!post) notFound();
 
+  // 로그인 여부와 무관하게 조회 때마다 1 증가 (security definer 함수로 RLS 우회).
+  await supabase.rpc("increment_post_views", { p_post_id: id });
+
   const { data: comments } = await supabase
     .from("comments")
     .select("*, profiles(id, nickname, created_at)")
     .eq("post_id", id);
 
+  const { data: votes } = await supabase
+    .from("post_votes")
+    .select("user_id, value")
+    .eq("post_id", id);
+
   const commentList = (comments ?? []) as Comment[];
+  const voteList = (votes ?? []) as Pick<PostVote, "user_id" | "value">[];
+  const upvotes = voteList.filter((v) => v.value === 1).length;
+  const downvotes = voteList.filter((v) => v.value === -1).length;
+  const myVote = user ? voteList.find((v) => v.user_id === user.id)?.value ?? null : null;
   const author = (post as Post & { profiles: Pick<Profile, "nickname"> | null })
     .profiles;
 
@@ -45,6 +58,9 @@ export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
           <h2 className="detail-title">{post.title}</h2>
           <div className="detail-meta">
             <span className="meta-text">{author?.nickname ?? "탈퇴한 유저"}</span>
+            <span className="meta-text">조회 {post.view_count + 1}</span>
+            <span className="meta-text">추천 {upvotes}</span>
+            <span className="meta-text">비추천 {downvotes}</span>
             <span className="meta-text">{fmtRecentDate(post.created_at)} 작성</span>
           </div>
           <p className="detail-desc" style={{ whiteSpace: "pre-wrap" }}>
@@ -58,6 +74,13 @@ export default async function PostDetailPage(props: PageProps<"/board/[id]">) {
               <DeletePostButton postId={id} />
             </div>
           )}
+          <PostVoteButtons
+            postId={id}
+            upvotes={upvotes}
+            downvotes={downvotes}
+            myVote={myVote}
+            loggedIn={!!user}
+          />
         </div>
 
         {user ? (

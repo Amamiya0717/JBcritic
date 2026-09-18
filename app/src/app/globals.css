@@ -645,6 +645,41 @@ textarea:focus {
   white-space: pre-wrap;
 }
 
+.vote-row {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 24px;
+}
+.vote-btn {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+}
+.vote-btn:hover:not(:disabled) {
+  border-color: var(--black);
+}
+.vote-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.vote-btn.up.active {
+  background: rgba(79, 163, 38, 0.12);
+  border-color: var(--green-dark);
+  color: var(--green-dark);
+}
+.vote-btn.down.active {
+  background: rgba(204, 0, 0, 0.1);
+  border-color: var(--red-dark);
+  color: var(--red-dark);
+}
+
 .section-title {
   font-size: 0.85rem;
   font-weight: 800;

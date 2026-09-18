@@ -31,8 +31,15 @@ export type Post = {
   title: string;
   content: string;
   author_id: string | null;
+  view_count: number;
   created_at: string;
   updated_at: string;
+};
+
+export type PostVote = {
+  post_id: string;
+  user_id: string;
+  value: 1 | -1;
 };
 
 export const POST_TITLE_MAX_LENGTH = 100;

@@ -239,6 +239,45 @@ export async function deletePost(postId: string): Promise<ActionResult> {
   redirect("/board");
 }
 
+export async function votePost(
+  postId: string,
+  value: 1 | -1
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "로그인 후 이용해주세요." };
+
+  const { data: existing } = await supabase
+    .from("post_votes")
+    .select("value")
+    .eq("post_id", postId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  // 같은 버튼을 다시 누르면 추천/비추천을 취소한다.
+  if (existing?.value === value) {
+    const { error } = await supabase
+      .from("post_votes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("user_id", user.id);
+    if (error) return { error: "추천 취소에 실패했어요: " + error.message };
+  } else {
+    const { error } = await supabase
+      .from("post_votes")
+      .upsert(
+        { post_id: postId, user_id: user.id, value },
+        { onConflict: "post_id,user_id" }
+      );
+    if (error) return { error: "추천 처리에 실패했어요: " + error.message };
+  }
+
+  revalidatePath(`/board/${postId}`);
+  return { error: null };
+}
+
 export async function addComment(
   postId: string,
   formData: FormData
