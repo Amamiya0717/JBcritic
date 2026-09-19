@@ -8,7 +8,7 @@ import ReviewList from "@/components/ReviewList";
 import DeleteGameButton from "@/components/DeleteGameButton";
 import { createClient } from "@/lib/supabase/server";
 import { fmtDate } from "@/lib/format";
-import { withStats, type Game, type Review } from "@/lib/types";
+import { categoryPath, withStats, type Game, type Review } from "@/lib/types";
 
 export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
   const { id } = await props.params;
@@ -39,7 +39,7 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
     <>
       <Header />
       <div className="page">
-        <Link href="/" className="back-link btn-text">
+        <Link href={categoryPath(stats.category)} className="back-link btn-text">
           ← 목록으로
         </Link>
 
@@ -66,7 +66,7 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
                 <Link href={`/games/${id}/edit`} className="review-edit">
                   수정
                 </Link>
-                <DeleteGameButton gameId={id} />
+                <DeleteGameButton gameId={id} category={stats.category} />
               </div>
             )}
           </div>

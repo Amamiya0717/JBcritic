@@ -20,6 +20,7 @@ export default async function HomePage() {
   const { data: games } = await supabase
     .from("games")
     .select("*, reviews(score)")
+    .eq("category", "game")
     .order("created_at", { ascending: false });
 
   const rows = (games ?? []) as (Game & { reviews: { score: number }[] })[];

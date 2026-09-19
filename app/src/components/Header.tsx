@@ -2,15 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/actions";
 import Logo from "@/components/Logo";
-
-const CATEGORIES = [
-  { label: "Games", href: "/" },
-  { label: "Anime", href: null },
-  { label: "Movies", href: null },
-  { label: "Music", href: null },
-  { label: "Lives", href: null },
-  { label: "Board", href: "/board" },
-] as const;
+import { GAME_CATEGORIES } from "@/lib/types";
 
 export default async function Header() {
   const supabase = await createClient();
@@ -83,17 +75,14 @@ export default async function Header() {
           </div>
 
           <nav className="main-nav">
-            {CATEGORIES.map((c) =>
-              c.href ? (
-                <Link key={c.label} href={c.href} className="main-nav-link">
-                  {c.label}
-                </Link>
-              ) : (
-                <span key={c.label} className="main-nav-link disabled">
-                  {c.label}
-                </span>
-              )
-            )}
+            {GAME_CATEGORIES.map((c) => (
+              <Link key={c.value} href={c.path} className="main-nav-link">
+                {c.label}
+              </Link>
+            ))}
+            <Link href="/board" className="main-nav-link">
+              Board
+            </Link>
           </nav>
 
           <form action="/search" method="GET" className="nav-search">
@@ -119,7 +108,7 @@ export default async function Header() {
               type="text"
               name="q"
               placeholder="검색"
-              aria-label="게임 검색"
+              aria-label="검색"
             />
           </form>
         </div>

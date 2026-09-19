@@ -2,14 +2,21 @@
 
 import { useTransition } from "react";
 import { deleteGame } from "@/lib/actions";
+import type { GameCategory } from "@/lib/types";
 
-export default function DeleteGameButton({ gameId }: { gameId: string }) {
+export default function DeleteGameButton({
+  gameId,
+  category,
+}: {
+  gameId: string;
+  category: GameCategory;
+}) {
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
     if (!confirm("이 게임을 삭제할까요? 등록된 리뷰도 모두 함께 삭제돼요.")) return;
     startTransition(() => {
-      deleteGame(gameId);
+      deleteGame(gameId, category);
     });
   }
 

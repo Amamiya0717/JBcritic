@@ -60,7 +60,9 @@ export default async function SearchPage(props: PageProps<"/search">) {
           </div>
         )}
       </div>
-      {list.length > 0 && <GameListClient games={list} initialSearch={q} />}
+      {list.length > 0 && (
+        <GameListClient games={list} initialSearch={q} showCategoryTag />
+      )}
     </>
   );
 }

@@ -2,12 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { addGame, updateGame } from "@/lib/actions";
+import { GAME_CATEGORIES, type GameCategory } from "@/lib/types";
 
 const SWATCHES = ["#66cc33", "#ffcc33", "#ff0000", "#3b7bd9", "#8c4bc7", "#666666"];
 
 export default function AddGameForm({
   gameId,
   initial,
+  defaultCategory = "game",
 }: {
   gameId?: string;
   initial?: {
@@ -16,8 +18,13 @@ export default function AddGameForm({
     description: string | null;
     coverUrl: string | null;
     color: string;
+    category: GameCategory;
   };
+  defaultCategory?: GameCategory;
 }) {
+  const [category, setCategory] = useState<GameCategory>(
+    initial?.category ?? defaultCategory
+  );
   const [color, setColor] = useState(initial?.color ?? SWATCHES[0]);
   const [coverUrl, setCoverUrl] = useState(initial?.coverUrl ?? "");
   const [coverFailed, setCoverFailed] = useState(false);
@@ -39,7 +46,24 @@ export default function AddGameForm({
       {error && <p className="form-error">{error}</p>}
 
       <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="title">게임 제목</label>
+        <label htmlFor="category">카테고리</label>
+        <select
+          className="select"
+          id="category"
+          name="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value as GameCategory)}
+        >
+          {GAME_CATEGORIES.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="field" style={{ marginBottom: 12 }}>
+        <label htmlFor="title">제목</label>
         <input
           className="input"
           id="title"

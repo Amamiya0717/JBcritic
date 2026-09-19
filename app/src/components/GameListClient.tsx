@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import ScoreBox from "@/components/ScoreBox";
 import GameThumb from "@/components/GameThumb";
-import type { GameWithStats } from "@/lib/types";
+import { categoryLabel, type GameWithStats } from "@/lib/types";
 
 type SortKey = "score-desc" | "score-asc" | "recent" | "reviews" | "title";
 
@@ -14,10 +14,20 @@ export default function GameListClient({
   games,
   initialSearch = "",
   showSearch = true,
+  showCategoryTag = false,
+  emptyText = "아직 등록된 게임이 없어요. 정신병동의 첫 평가를 기록해보세요.",
+  addHref = "/games/new",
+  addLabel = "게임 추가",
+  searchPlaceholder = "게임 제목이나 장르로 검색",
 }: {
   games: GameWithStats[];
   initialSearch?: string;
   showSearch?: boolean;
+  showCategoryTag?: boolean;
+  emptyText?: string;
+  addHref?: string;
+  addLabel?: string;
+  searchPlaceholder?: string;
 }) {
   const [search, setSearch] = useState(initialSearch);
   const [sort, setSort] = useState<SortKey>("score-desc");
@@ -55,7 +65,7 @@ export default function GameListClient({
           <input
             className="input"
             type="text"
-            placeholder="게임 제목이나 장르로 검색"
+            placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -76,9 +86,9 @@ export default function GameListClient({
       {list.length === 0 ? (
         games.length === 0 ? (
           <div className="empty-state">
-            <p>아직 등록된 게임이 없어요. 정신병동의 첫 평가를 기록해보세요.</p>
-            <Link href="/games/new" className="btn btn-gold">
-              게임 추가
+            <p>{emptyText}</p>
+            <Link href={addHref} className="btn btn-gold">
+              {addLabel}
             </Link>
           </div>
         ) : (
@@ -95,6 +105,9 @@ export default function GameListClient({
               <div className="game-row-body">
                 <p className="game-title">{g.title}</p>
                 <div className="game-meta">
+                  {showCategoryTag && (
+                    <span className="tag">{categoryLabel(g.category)}</span>
+                  )}
                   {g.genre && <span className="tag">{g.genre}</span>}
                   <span className="meta-text">리뷰 {g.reviewCount}건</span>
                 </div>

@@ -39,6 +39,7 @@ export default async function EditGamePage(props: PageProps<"/games/[id]/edit">)
             description: game.description,
             coverUrl: game.cover_url,
             color: game.color,
+            category: game.category,
           }}
         />
       </div>
