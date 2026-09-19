@@ -1,7 +1,7 @@
 import Link from "next/link";
 import GameThumb from "@/components/GameThumb";
 import { fmtScore, tierDistribution, tierLabel, tierOf } from "@/lib/format";
-import type { GameWithStats } from "@/lib/types";
+import { categoryLabel, type GameWithStats } from "@/lib/types";
 
 export default function SpotlightCard({
   game,
@@ -25,7 +25,7 @@ export default function SpotlightCard({
       </div>
       <div className="meta-card-body">
         <p className="meta-card-title">{game.title}</p>
-        <span className="tag">game</span>
+        <span className="tag">{categoryLabel(game.category)}</span>
       </div>
       <div className="meta-card-score">
         <p className="meta-card-score-label">JB SCORE</p>
