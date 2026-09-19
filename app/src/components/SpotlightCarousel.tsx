@@ -1,12 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 export default function SpotlightCarousel({
   title,
+  moreHref,
   children,
 }: {
   title: string;
+  moreHref?: string;
   children: ReactNode;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -37,25 +40,32 @@ export default function SpotlightCarousel({
     <section className="spotlight-section">
       <div className="spotlight-header">
         <h2 className="spotlight-title">{title}</h2>
-        <div className="spotlight-arrows">
-          <button
-            type="button"
-            className="carousel-arrow"
-            onClick={() => scrollByPage(-1)}
-            disabled={atStart}
-            aria-label="이전"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="carousel-arrow"
-            onClick={() => scrollByPage(1)}
-            disabled={atEnd}
-            aria-label="다음"
-          >
-            ›
-          </button>
+        <div className="spotlight-header-actions">
+          {moreHref && (
+            <Link href={moreHref} className="btn-text">
+              전체보기 →
+            </Link>
+          )}
+          <div className="spotlight-arrows">
+            <button
+              type="button"
+              className="carousel-arrow"
+              onClick={() => scrollByPage(-1)}
+              disabled={atStart}
+              aria-label="이전"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="carousel-arrow"
+              onClick={() => scrollByPage(1)}
+              disabled={atEnd}
+              aria-label="다음"
+            >
+              ›
+            </button>
+          </div>
         </div>
       </div>
       <div className="spotlight-scroll" ref={scrollRef} onScroll={updateEdges}>

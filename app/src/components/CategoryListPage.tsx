@@ -1,17 +1,42 @@
+import Link from "next/link";
 import Header from "@/components/Header";
-import GameListClient from "@/components/GameListClient";
+import GameRow from "@/components/GameRow";
+import SortSelect from "@/components/SortSelect";
+import Pagination from "@/components/Pagination";
 import { createClient } from "@/lib/supabase/server";
 import { fetchGamesByCategory } from "@/lib/games";
-import { categoryLabel, type GameCategory } from "@/lib/types";
+import {
+  GAMES_PAGE_SIZE,
+  categoryLabel,
+  categoryListPath,
+  isSortKey,
+  sortGames,
+  type GameCategory,
+  type SortKey,
+} from "@/lib/types";
 
 export default async function CategoryListPage({
   category,
+  searchParams,
 }: {
   category: GameCategory;
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
   const supabase = await createClient();
-  const list = await fetchGamesByCategory(supabase, category);
+  const all = await fetchGamesByCategory(supabase, category);
   const label = categoryLabel(category);
+  const basePath = categoryListPath(category);
+
+  const sortRaw = searchParams.sort;
+  const sort: SortKey =
+    typeof sortRaw === "string" && isSortKey(sortRaw) ? sortRaw : "score-desc";
+  const sorted = sortGames(all, sort);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / GAMES_PAGE_SIZE));
+  const pageRawParam = searchParams.page;
+  const pageRaw = parseInt(typeof pageRawParam === "string" ? pageRawParam : "1", 10);
+  const page = Number.isFinite(pageRaw) ? Math.min(Math.max(pageRaw, 1), totalPages) : 1;
+  const pageItems = sorted.slice((page - 1) * GAMES_PAGE_SIZE, page * GAMES_PAGE_SIZE);
 
   return (
     <>
@@ -20,14 +45,31 @@ export default async function CategoryListPage({
         <div className="spotlight-header">
           <h2 className="spotlight-title">{label}</h2>
         </div>
+
+        {all.length === 0 ? (
+          <div className="empty-state">
+            <p>아직 등록된 {label} 항목이 없어요.</p>
+            <Link href={`/games/new?category=${category}`} className="btn btn-gold">
+              {label} 추가
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="toolbar">
+              <SortSelect basePath={basePath} sort={sort} />
+            </div>
+            {pageItems.map((g) => (
+              <GameRow key={g.id} game={g} />
+            ))}
+            <Pagination
+              basePath={basePath}
+              sort={sort}
+              page={page}
+              totalPages={totalPages}
+            />
+          </>
+        )}
       </div>
-      <GameListClient
-        games={list}
-        addHref={`/games/new?category=${category}`}
-        addLabel={`${label} 추가`}
-        emptyText={`아직 등록된 ${label} 항목이 없어요.`}
-        searchPlaceholder={`${label} 제목이나 장르로 검색`}
-      />
     </>
   );
 }

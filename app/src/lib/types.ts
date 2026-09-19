@@ -5,11 +5,11 @@ export type Profile = {
 };
 
 export const GAME_CATEGORIES = [
-  { value: "game", label: "Games", path: "/" },
-  { value: "anime", label: "Anime", path: "/anime" },
-  { value: "movies", label: "Movies", path: "/movies" },
-  { value: "music", label: "Music", path: "/music" },
-  { value: "lives", label: "Lives", path: "/lives" },
+  { value: "game", label: "Games", path: "/", listPath: "/games" },
+  { value: "anime", label: "Anime", path: "/anime", listPath: "/anime" },
+  { value: "movies", label: "Movies", path: "/movies", listPath: "/movies" },
+  { value: "music", label: "Music", path: "/music", listPath: "/music" },
+  { value: "lives", label: "Lives", path: "/lives", listPath: "/lives" },
 ] as const;
 
 export type GameCategory = (typeof GAME_CATEGORIES)[number]["value"];
@@ -20,6 +20,13 @@ export function isGameCategory(value: string): value is GameCategory {
 
 export function categoryPath(category: GameCategory): string {
   return GAME_CATEGORIES.find((c) => c.value === category)?.path ?? "/";
+}
+
+// The full sortable/paginated browse page for a category (used by "전체보기"
+// links) — distinct from categoryPath, since the "game" nav tab points at
+// the homepage ("/") while its browse page lives at "/games".
+export function categoryListPath(category: GameCategory): string {
+  return GAME_CATEGORIES.find((c) => c.value === category)?.listPath ?? "/";
 }
 
 export function categoryLabel(category: GameCategory): string {
@@ -133,3 +140,33 @@ export function withStats(game: Game, reviews: { score: number }[]): GameWithSta
     : null;
   return { ...game, avgScore, reviewCount };
 }
+
+export const SORT_OPTIONS = [
+  { value: "score-desc", label: "점수 높은순" },
+  { value: "score-asc", label: "점수 낮은순" },
+  { value: "recent", label: "최근 등록순" },
+  { value: "reviews", label: "리뷰 많은순" },
+  { value: "title", label: "이름순" },
+] as const;
+
+export type SortKey = (typeof SORT_OPTIONS)[number]["value"];
+
+export function isSortKey(value: string): value is SortKey {
+  return SORT_OPTIONS.some((o) => o.value === value);
+}
+
+export function sortGames(games: GameWithStats[], sort: SortKey): GameWithStats[] {
+  const result = [...games];
+  result.sort((a, b) => {
+    if (sort === "score-desc") return (b.avgScore ?? -1) - (a.avgScore ?? -1);
+    if (sort === "score-asc") return (a.avgScore ?? 999) - (b.avgScore ?? 999);
+    if (sort === "recent")
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sort === "reviews") return b.reviewCount - a.reviewCount;
+    if (sort === "title") return a.title.localeCompare(b.title, "ko");
+    return 0;
+  });
+  return result;
+}
+
+export const GAMES_PAGE_SIZE = 20;

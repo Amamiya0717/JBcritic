@@ -2,11 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import ScoreBox from "@/components/ScoreBox";
-import GameThumb from "@/components/GameThumb";
-import { categoryLabel, type GameWithStats } from "@/lib/types";
-
-type SortKey = "score-desc" | "score-asc" | "recent" | "reviews" | "title";
+import GameRow from "@/components/GameRow";
+import { SORT_OPTIONS, sortGames, type GameWithStats, type SortKey } from "@/lib/types";
 
 const PAGE_SIZE = 12;
 
@@ -43,17 +40,7 @@ export default function GameListClient({
           (g.genre || "").toLowerCase().includes(q)
       );
     }
-    result = [...result].sort((a, b) => {
-      if (sort === "score-desc")
-        return (b.avgScore ?? -1) - (a.avgScore ?? -1);
-      if (sort === "score-asc") return (a.avgScore ?? 999) - (b.avgScore ?? 999);
-      if (sort === "recent")
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      if (sort === "reviews") return b.reviewCount - a.reviewCount;
-      if (sort === "title") return a.title.localeCompare(b.title, "ko");
-      return 0;
-    });
-    return result;
+    return sortGames(result, sort);
   }, [games, search, sort]);
 
   const visibleList = showAll ? list : list.slice(0, PAGE_SIZE);
@@ -75,11 +62,11 @@ export default function GameListClient({
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
         >
-          <option value="score-desc">점수 높은순</option>
-          <option value="score-asc">점수 낮은순</option>
-          <option value="recent">최근 등록순</option>
-          <option value="reviews">리뷰 많은순</option>
-          <option value="title">이름순</option>
+          {SORT_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -99,20 +86,7 @@ export default function GameListClient({
       ) : (
         <>
           {visibleList.map((g) => (
-            <Link key={g.id} href={`/games/${g.id}`} className="game-row">
-              <GameThumb coverUrl={g.cover_url} color={g.color} title={g.title} />
-              <ScoreBox score={g.avgScore} size="md" />
-              <div className="game-row-body">
-                <p className="game-title">{g.title}</p>
-                <div className="game-meta">
-                  {showCategoryTag && (
-                    <span className="tag">{categoryLabel(g.category)}</span>
-                  )}
-                  {g.genre && <span className="tag">{g.genre}</span>}
-                  <span className="meta-text">리뷰 {g.reviewCount}건</span>
-                </div>
-              </div>
-            </Link>
+            <GameRow key={g.id} game={g} showCategoryTag={showCategoryTag} />
           ))}
           {!showAll && list.length > PAGE_SIZE && (
             <div className="load-more">
