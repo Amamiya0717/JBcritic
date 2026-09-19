@@ -4,14 +4,38 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
+  CATEGORY_FIELD_KEYS,
+  CATEGORY_FIELDS,
   POST_CONTENT_MAX_LENGTH,
   POST_TITLE_MAX_LENGTH,
   categoryPath,
   isGameCategory,
+  type CategoryFieldKey,
   type GameCategory,
 } from "@/lib/types";
 
 export type ActionResult = { error: string } | { error: null };
+
+function readCategoryFields(
+  category: GameCategory,
+  formData: FormData
+): Record<CategoryFieldKey, string | number | null> {
+  const result: Record<CategoryFieldKey, string | number | null> = Object.fromEntries(
+    CATEGORY_FIELD_KEYS.map((key) => [key, null])
+  ) as Record<CategoryFieldKey, string | number | null>;
+
+  for (const field of CATEGORY_FIELDS[category]) {
+    const raw = String(formData.get(field.key) || "").trim();
+    if (!raw) continue;
+    if (field.type === "year") {
+      const year = parseInt(raw, 10);
+      result[field.key] = Number.isFinite(year) ? year : null;
+    } else {
+      result[field.key] = raw;
+    }
+  }
+  return result;
+}
 
 export async function addGame(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
@@ -39,6 +63,7 @@ export async function addGame(formData: FormData): Promise<ActionResult> {
       cover_url: coverUrl || null,
       color,
       category,
+      ...readCategoryFields(category, formData),
       added_by: user.id,
     })
     .select("id")
@@ -79,6 +104,7 @@ export async function updateGame(
       cover_url: coverUrl || null,
       color,
       category,
+      ...readCategoryFields(category, formData),
     })
     .eq("id", gameId)
     .eq("added_by", user.id);

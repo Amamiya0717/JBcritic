@@ -2,7 +2,12 @@
 
 import { useState, useTransition } from "react";
 import { addGame, updateGame } from "@/lib/actions";
-import { GAME_CATEGORIES, type GameCategory } from "@/lib/types";
+import {
+  CATEGORY_FIELDS,
+  GAME_CATEGORIES,
+  type CategoryFieldKey,
+  type GameCategory,
+} from "@/lib/types";
 
 const SWATCHES = ["#66cc33", "#ffcc33", "#ff0000", "#3b7bd9", "#8c4bc7", "#666666"];
 
@@ -19,12 +24,13 @@ export default function AddGameForm({
     coverUrl: string | null;
     color: string;
     category: GameCategory;
-  };
+  } & Partial<Record<CategoryFieldKey, string | number | null>>;
   defaultCategory?: GameCategory;
 }) {
   const [category, setCategory] = useState<GameCategory>(
     initial?.category ?? defaultCategory
   );
+  const categoryFields = CATEGORY_FIELDS[category];
   const [color, setColor] = useState(initial?.color ?? SWATCHES[0]);
   const [coverUrl, setCoverUrl] = useState(initial?.coverUrl ?? "");
   const [coverFailed, setCoverFailed] = useState(false);
@@ -73,6 +79,19 @@ export default function AddGameForm({
           defaultValue={initial?.title}
         />
       </div>
+
+      {categoryFields.map((f) => (
+        <div className="field" style={{ marginBottom: 12 }} key={f.key}>
+          <label htmlFor={f.key}>{f.label}</label>
+          <input
+            className="input"
+            id={f.key}
+            name={f.key}
+            type={f.type === "date" ? "date" : f.type === "year" ? "number" : "text"}
+            defaultValue={initial?.[f.key] ?? undefined}
+          />
+        </div>
+      ))}
 
       <div className="field" style={{ marginBottom: 12 }}>
         <label htmlFor="genre">장르 (선택)</label>

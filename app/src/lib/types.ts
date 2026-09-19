@@ -26,6 +26,44 @@ export function categoryLabel(category: GameCategory): string {
   return GAME_CATEGORIES.find((c) => c.value === category)?.label ?? category;
 }
 
+export type CategoryFieldKey =
+  | "studio"
+  | "director"
+  | "artist"
+  | "release_year"
+  | "venue"
+  | "event_date";
+
+export type CategoryField = {
+  key: CategoryFieldKey;
+  label: string;
+  type: "text" | "year" | "date";
+};
+
+export const CATEGORY_FIELD_KEYS: CategoryFieldKey[] = [
+  "studio",
+  "director",
+  "artist",
+  "release_year",
+  "venue",
+  "event_date",
+];
+
+export const CATEGORY_FIELDS: Record<GameCategory, CategoryField[]> = {
+  game: [],
+  anime: [{ key: "studio", label: "제작사", type: "text" }],
+  movies: [{ key: "director", label: "감독", type: "text" }],
+  music: [
+    { key: "artist", label: "아티스트", type: "text" },
+    { key: "release_year", label: "발매년도", type: "year" },
+  ],
+  lives: [
+    { key: "artist", label: "출연자", type: "text" },
+    { key: "venue", label: "공연 장소", type: "text" },
+    { key: "event_date", label: "공연일자", type: "date" },
+  ],
+};
+
 export type Game = {
   id: string;
   title: string;
@@ -34,6 +72,12 @@ export type Game = {
   cover_url: string | null;
   color: string;
   category: GameCategory;
+  studio: string | null;
+  director: string | null;
+  artist: string | null;
+  release_year: number | null;
+  venue: string | null;
+  event_date: string | null;
   added_by: string | null;
   created_at: string;
 };
