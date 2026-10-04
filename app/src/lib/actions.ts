@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/admin";
 import {
   CATEGORY_FIELD_KEYS,
   CATEGORY_FIELDS,
@@ -95,7 +96,7 @@ export async function updateGame(
 
   if (!title) return { error: "제목을 입력해주세요." };
 
-  const { error } = await supabase
+  let query = supabase
     .from("games")
     .update({
       title,
@@ -106,8 +107,10 @@ export async function updateGame(
       category,
       ...readCategoryFields(category, formData),
     })
-    .eq("id", gameId)
-    .eq("added_by", user.id);
+    .eq("id", gameId);
+  if (!(await isAdmin(supabase))) query = query.eq("added_by", user.id);
+
+  const { error } = await query;
 
   if (error) return { error: "수정에 실패했어요: " + error.message };
 
@@ -126,11 +129,10 @@ export async function deleteGame(
   } = await supabase.auth.getUser();
   if (!user) return { error: "로그인 후 이용해주세요." };
 
-  const { error } = await supabase
-    .from("games")
-    .delete()
-    .eq("id", gameId)
-    .eq("added_by", user.id);
+  let query = supabase.from("games").delete().eq("id", gameId);
+  if (!(await isAdmin(supabase))) query = query.eq("added_by", user.id);
+
+  const { error } = await query;
 
   if (error) return { error: "삭제에 실패했어요: " + error.message };
 

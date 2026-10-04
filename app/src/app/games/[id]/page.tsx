@@ -7,6 +7,7 @@ import ReviewForm from "@/components/ReviewForm";
 import ReviewList from "@/components/ReviewList";
 import DeleteGameButton from "@/components/DeleteGameButton";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/admin";
 import { fmtDate } from "@/lib/format";
 import {
   CATEGORY_FIELDS,
@@ -40,6 +41,8 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
   const reviewList = (reviews ?? []) as Review[];
   const stats = withStats(game as Game, reviewList);
   const myReview = user ? reviewList.find((r) => r.user_id === user.id) : undefined;
+  const canEdit =
+    !!user && (user.id === stats.added_by || (await isAdmin(supabase)));
 
   return (
     <>
@@ -76,7 +79,7 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
             {stats.description && (
               <p className="detail-desc">{stats.description}</p>
             )}
-            {user?.id === stats.added_by && (
+            {canEdit && (
               <div className="review-actions" style={{ marginTop: 10 }}>
                 <Link href={`/games/${id}/edit`} className="review-edit">
                   수정

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import Header from "@/components/Header";
 import AddGameForm from "@/components/AddGameForm";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/admin";
 
 export default async function EditGamePage(props: PageProps<"/games/[id]/edit">) {
   const { id } = await props.params;
@@ -19,7 +20,9 @@ export default async function EditGamePage(props: PageProps<"/games/[id]/edit">)
     .single();
 
   if (!game) notFound();
-  if (!user || user.id !== game.added_by) redirect(`/games/${id}`);
+  if (!user || (user.id !== game.added_by && !(await isAdmin(supabase)))) {
+    redirect(`/games/${id}`);
+  }
 
   return (
     <>
