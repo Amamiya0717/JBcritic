@@ -54,7 +54,7 @@ export default function ReviewForm({
           id="comment"
           name="comment"
           rows={5}
-          placeholder="이 게임에 대한 생각을 자유롭게 남겨주세요"
+          placeholder="이 작품에 대한 생각을 자유롭게 남겨주세요"
           defaultValue={initialComment}
         />
       </div>

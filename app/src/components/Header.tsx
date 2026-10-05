@@ -24,7 +24,7 @@ export default async function Header() {
               {user ? (
                 <>
                   <Link href="/games/new" className="nav-btn primary">
-                    게임 추가
+                    작품 추가
                   </Link>
                   <div className="profile-menu-wrap">
                     <button

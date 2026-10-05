@@ -84,7 +84,7 @@ export default async function MyPage() {
                 <div className="review-body">
                   <div className="review-top">
                     <span className="review-member">
-                      {r.games?.title ?? "삭제된 게임"}
+                      {r.games?.title ?? "삭제된 작품"}
                     </span>
                     <span className="review-date">{fmtDate(r.created_at)}</span>
                   </div>

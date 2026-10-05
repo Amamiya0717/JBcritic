@@ -14,7 +14,7 @@ export default function DeleteGameButton({
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (!confirm("이 게임을 삭제할까요? 등록된 리뷰도 모두 함께 삭제돼요.")) return;
+    if (!confirm("이 작품을 삭제할까요? 등록된 리뷰도 모두 함께 삭제돼요.")) return;
     startTransition(() => {
       deleteGame(gameId, category);
     });

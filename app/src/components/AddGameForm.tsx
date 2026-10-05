@@ -183,7 +183,7 @@ export default function AddGameForm({
           className="input"
           id="description"
           name="description"
-          placeholder="어떤 게임인지 짧게 적어주세요"
+          placeholder="어떤 작품인지 짧게 적어주세요"
           defaultValue={(prefill ? prefill.description : initial?.description) ?? undefined}
         />
       </div>

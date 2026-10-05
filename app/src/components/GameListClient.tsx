@@ -12,10 +12,10 @@ export default function GameListClient({
   initialSearch = "",
   showSearch = true,
   showCategoryTag = false,
-  emptyText = "아직 등록된 게임이 없어요. 정신병동의 첫 평가를 기록해보세요.",
+  emptyText = "아직 등록된 작품이 없어요. 정신병동의 첫 평가를 기록해보세요.",
   addHref = "/games/new",
-  addLabel = "게임 추가",
-  searchPlaceholder = "게임 제목이나 장르로 검색",
+  addLabel = "작품 추가",
+  searchPlaceholder = "작품 제목이나 장르로 검색",
 }: {
   games: GameWithStats[];
   initialSearch?: string;

@@ -29,10 +29,10 @@ export default async function EditGamePage(props: PageProps<"/games/[id]/edit">)
       <Header />
       <div className="page">
         <Link href={`/games/${id}`} className="back-link btn-text">
-          ← 게임으로
+          ← 작품으로
         </Link>
         <h2 className="section-title" style={{ fontSize: "1rem" }}>
-          게임 정보 수정
+          작품 정보 수정
         </h2>
         <AddGameForm
           gameId={id}
