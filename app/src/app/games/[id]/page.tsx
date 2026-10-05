@@ -25,13 +25,17 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: game } = await supabase
+  // reviews도 profiles를 참조하므로, 임베드 경로가 모호해지지 않게 외래키를 지정한다.
+  const { data: gameRow } = await supabase
     .from("games")
-    .select("*")
+    .select("*, profiles!games_added_by_fkey(nickname)")
     .eq("id", id)
     .single();
 
-  if (!game) notFound();
+  if (!gameRow) notFound();
+  const { profiles: adder, ...game } = gameRow as Game & {
+    profiles: { nickname: string } | null;
+  };
 
   const { data: reviews } = await supabase
     .from("reviews")
@@ -39,7 +43,7 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
     .eq("game_id", id);
 
   const reviewList = (reviews ?? []) as Review[];
-  const stats = withStats(game as Game, reviewList);
+  const stats = withStats(game, reviewList);
   const myReview = user ? reviewList.find((r) => r.user_id === user.id) : undefined;
   const canEdit =
     !!user && (user.id === stats.added_by || (await isAdmin(supabase)));
@@ -73,6 +77,7 @@ export default async function GameDetailPage(props: PageProps<"/games/[id]">) {
                   </span>
                 );
               })}
+              {adder && <span className="meta-text">등록자 {adder.nickname}</span>}
               <span className="meta-text">{fmtDate(stats.created_at)} 등록</span>
               <span className="meta-text">리뷰 {stats.reviewCount}건</span>
             </div>
