@@ -313,9 +313,11 @@ select {
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding-bottom: 6px;
+  /* 스크롤바가 카드에 붙지 않게 아래 여백을 두고, 카드 그림자·호버 상승이 잘리지 않게
+     위/좌우 여백도 준다 (음수 마진으로 제목 줄과의 정렬은 유지) */
+  padding: 8px 6px 24px;
+  margin: -8px -6px 0;
   scroll-behavior: smooth;
-  max-width: 100%;
   min-width: 0;
 }
 
