@@ -71,6 +71,21 @@ export const CATEGORY_FIELDS: Record<GameCategory, CategoryField[]> = {
   ],
 };
 
+// 외부 서비스(AniList/TMDB/iTunes)로 등록 폼을 자동 채울 수 있는 카테고리.
+export const LOOKUP_CATEGORIES: GameCategory[] = ["anime", "movies", "music"];
+
+export type LookupResult = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  genre: string | null;
+  description: string | null;
+  coverUrl: string | null;
+  fields: Partial<Record<CategoryFieldKey, string | number>>;
+  // 목록 검색에는 없는 정보(영화 감독 등)를 선택 시점에 따로 가져와야 하는 경우.
+  needsDetail?: boolean;
+};
+
 export type Game = {
   id: string;
   title: string;

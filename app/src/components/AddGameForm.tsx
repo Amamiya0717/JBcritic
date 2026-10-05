@@ -6,9 +6,12 @@ import { createClient } from "@/lib/supabase/client";
 import {
   CATEGORY_FIELDS,
   GAME_CATEGORIES,
+  LOOKUP_CATEGORIES,
   type CategoryFieldKey,
   type GameCategory,
+  type LookupResult,
 } from "@/lib/types";
+import LookupBox from "@/components/LookupBox";
 
 const SWATCHES = ["#66cc33", "#ffcc33", "#ff0000", "#3b7bd9", "#8c4bc7", "#666666"];
 
@@ -46,6 +49,18 @@ export default function AddGameForm({
   const [uploadError, setUploadError] = useState("");
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
+  // 검색 결과를 고르면 입력칸을 그 값으로 다시 그린다 (key가 바뀌어 defaultValue가 새로 적용됨).
+  const [prefill, setPrefill] = useState<LookupResult | null>(null);
+  const [rev, setRev] = useState(0);
+
+  function applyLookup(result: LookupResult) {
+    setPrefill(result);
+    setRev((n) => n + 1);
+    if (result.coverUrl) {
+      setCoverUrl(result.coverUrl);
+      setCoverFailed(false);
+    }
+  }
 
   async function handleCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -120,6 +135,10 @@ export default function AddGameForm({
         </select>
       </div>
 
+      {LOOKUP_CATEGORIES.includes(category) && (
+        <LookupBox key={category} category={category} onSelect={applyLookup} />
+      )}
+
       <div className="field" style={{ marginBottom: 12 }}>
         <label htmlFor="title">제목</label>
         <input
@@ -128,24 +147,25 @@ export default function AddGameForm({
           name="title"
           type="text"
           placeholder="예: 리썰컴퍼니"
-          defaultValue={initial?.title}
+          key={`title-${rev}`}
+          defaultValue={prefill ? prefill.title : initial?.title}
         />
       </div>
 
       {categoryFields.map((f) => (
-        <div className="field" style={{ marginBottom: 12 }} key={f.key}>
+        <div className="field" style={{ marginBottom: 12 }} key={`${f.key}-${rev}`}>
           <label htmlFor={f.key}>{f.label}</label>
           <input
             className="input"
             id={f.key}
             name={f.key}
             type={f.type === "date" ? "date" : f.type === "year" ? "number" : "text"}
-            defaultValue={initial?.[f.key] ?? undefined}
+            defaultValue={(prefill ? prefill.fields[f.key] : initial?.[f.key]) ?? undefined}
           />
         </div>
       ))}
 
-      <div className="field" style={{ marginBottom: 12 }}>
+      <div className="field" style={{ marginBottom: 12 }} key={`genre-${rev}`}>
         <label htmlFor="genre">장르 (선택)</label>
         <input
           className="input"
@@ -153,18 +173,18 @@ export default function AddGameForm({
           name="genre"
           type="text"
           placeholder="예: 협동 호러"
-          defaultValue={initial?.genre ?? undefined}
+          defaultValue={(prefill ? prefill.genre : initial?.genre) ?? undefined}
         />
       </div>
 
-      <div className="field" style={{ marginBottom: 12 }}>
+      <div className="field" style={{ marginBottom: 12 }} key={`description-${rev}`}>
         <label htmlFor="description">간단 설명 (선택)</label>
         <textarea
           className="input"
           id="description"
           name="description"
           placeholder="어떤 게임인지 짧게 적어주세요"
-          defaultValue={initial?.description ?? undefined}
+          defaultValue={(prefill ? prefill.description : initial?.description) ?? undefined}
         />
       </div>
 
