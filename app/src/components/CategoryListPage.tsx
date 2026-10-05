@@ -8,7 +8,7 @@ import { fetchGamesByCategory } from "@/lib/games";
 import {
   GAMES_PAGE_SIZE,
   categoryLabel,
-  categoryListPath,
+  categoryPath,
   isSortKey,
   sortGames,
   type GameCategory,
@@ -25,7 +25,7 @@ export default async function CategoryListPage({
   const supabase = await createClient();
   const all = await fetchGamesByCategory(supabase, category);
   const label = categoryLabel(category);
-  const basePath = categoryListPath(category);
+  const basePath = categoryPath(category);
 
   const sortRaw = searchParams.sort;
   const sort: SortKey =

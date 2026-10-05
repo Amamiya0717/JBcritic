@@ -5,11 +5,11 @@ export type Profile = {
 };
 
 export const GAME_CATEGORIES = [
-  { value: "game", label: "Games", path: "/", listPath: "/games" },
-  { value: "anime", label: "Anime", path: "/anime", listPath: "/anime" },
-  { value: "movies", label: "Movies", path: "/movies", listPath: "/movies" },
-  { value: "music", label: "Music", path: "/music", listPath: "/music" },
-  { value: "lives", label: "Lives", path: "/lives", listPath: "/lives" },
+  { value: "game", label: "Games", path: "/games" },
+  { value: "anime", label: "Anime", path: "/anime" },
+  { value: "movies", label: "Movies", path: "/movies" },
+  { value: "music", label: "Music", path: "/music" },
+  { value: "lives", label: "Lives", path: "/lives" },
 ] as const;
 
 export type GameCategory = (typeof GAME_CATEGORIES)[number]["value"];
@@ -20,13 +20,6 @@ export function isGameCategory(value: string): value is GameCategory {
 
 export function categoryPath(category: GameCategory): string {
   return GAME_CATEGORIES.find((c) => c.value === category)?.path ?? "/";
-}
-
-// The full sortable/paginated browse page for a category (used by "전체보기"
-// links) — distinct from categoryPath, since the "game" nav tab points at
-// the homepage ("/") while its browse page lives at "/games".
-export function categoryListPath(category: GameCategory): string {
-  return GAME_CATEGORIES.find((c) => c.value === category)?.listPath ?? "/";
 }
 
 export function categoryLabel(category: GameCategory): string {

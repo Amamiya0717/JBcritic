@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fetchGamesWithScoresByCategory, type GameWithScores } from "@/lib/games";
 import {
   GAME_CATEGORIES,
-  categoryListPath,
+  categoryPath,
   type GameCategory,
   type Post,
   type Profile,
@@ -69,7 +69,7 @@ export default async function HomePage() {
             <SpotlightCarousel
               key={`recent-${category}`}
               title={`최근 등록 ${SECTION_LABELS[category]}`}
-              moreHref={`${categoryListPath(category)}?sort=recent`}
+              moreHref={`${categoryPath(category)}?sort=recent`}
             >
               {recent.map(({ stats, scores }) => (
                 <SpotlightCard key={stats.id} game={stats} scores={scores} />
@@ -85,7 +85,7 @@ export default async function HomePage() {
             <SpotlightCarousel
               key={`top-${category}`}
               title={`최고 평점 ${SECTION_LABELS[category]}`}
-              moreHref={`${categoryListPath(category)}?sort=score-desc`}
+              moreHref={`${categoryPath(category)}?sort=score-desc`}
             >
               {top.map(({ stats, scores }) => (
                 <SpotlightCard key={stats.id} game={stats} scores={scores} />
