@@ -137,7 +137,10 @@ export async function movieDetail(id: string): Promise<LookupResult["fields"]> {
 }
 
 // ── 음악: iTunes Search (키 불필요) ───────────────────────────────
-// country=KR 스토어는 검색 결과가 비어서 기본 스토어(US)를 쓴다. 한글 검색도 된다.
+// country=KR 스토어는 검색 결과가 비어서 쓰지 않는다. 일본 발매곡은 JP 스토어에만 있고
+// K-Pop·서양 음악은 US 스토어가 잘 잡히므로 두 스토어를 함께 검색한다.
+const ITUNES_STORES = ["JP", "US"] as const;
+const MUSIC_MAX_RESULTS = 12;
 type ItunesItem = {
   collectionId?: number;
   trackId?: number;
@@ -149,14 +152,20 @@ type ItunesItem = {
   artworkUrl100?: string;
 };
 
-async function itunes(term: string, entity: "album" | "song"): Promise<ItunesItem[]> {
+async function itunes(
+  term: string,
+  entity: "album" | "song",
+  country: string
+): Promise<ItunesItem[]> {
   const url = new URL("https://itunes.apple.com/search");
   url.searchParams.set("term", term);
   url.searchParams.set("media", "music");
   url.searchParams.set("entity", entity);
-  url.searchParams.set("country", "US");
+  url.searchParams.set("country", country);
   url.searchParams.set("limit", "5");
-  const json = (await getJson(url.toString())) as { results?: ItunesItem[] };
+  const json = (await getJson(url.toString(), { next: { revalidate: 3600 } })) as {
+    results?: ItunesItem[];
+  };
   return json.results ?? [];
 }
 
@@ -179,12 +188,61 @@ function itunesResult(item: ItunesItem, kind: "album" | "song"): LookupResult {
   };
 }
 
+// iTunes는 "한글 아티스트 + 일본어 곡명" 같은 긴 혼합 문장이나 "의" 같은 조사가 붙은
+// 검색어에서 엉뚱한 결과를 돌려준다. 전체 문장과 단어별 검색을 함께 하고,
+// 입력한 단어가 제목/아티스트에 많이 들어있는 결과를 위로 올린다.
+// 호출 수를 줄이려고 전체 문장 + 단어 2개까지만 쓴다. 한글이 아닌 글자(일본어 곡명,
+// 영문 등)가 들어간 단어를 먼저 고르는 이유는, 한글 단어는 아티스트 음차인 경우가 많아
+// 곡명 단어가 검색에서 밀리기 때문이다.
+function musicSearchTerms(q: string): string[] {
+  const hasHangul = (t: string) => /[가-힣]/.test(t);
+  const tokens = q
+    .split(/\s+/)
+    .filter((t) => t.length >= 2 && t !== q)
+    .sort((a, b) => Number(hasHangul(a)) - Number(hasHangul(b)) || b.length - a.length)
+    .slice(0, 2);
+  return [q, ...tokens];
+}
+
 async function searchMusic(q: string): Promise<LookupResult[]> {
-  const [albums, songs] = await Promise.all([itunes(q, "album"), itunes(q, "song")]);
-  return [
-    ...albums.map((a) => itunesResult(a, "album")),
-    ...songs.map((s) => itunesResult(s, "song")),
-  ];
+  const jobs: Promise<LookupResult[]>[] = [];
+  for (const term of musicSearchTerms(q)) {
+    for (const country of ITUNES_STORES) {
+      for (const kind of ["album", "song"] as const) {
+        jobs.push(
+          itunes(term, kind, country).then((items) =>
+            items.map((item) => itunesResult(item, kind))
+          )
+        );
+      }
+    }
+  }
+
+  // 일부 호출이 실패해도 나머지 결과는 보여준다. 전부 실패했을 때만 오류로 처리한다.
+  const settled = await Promise.allSettled(jobs);
+  const fulfilled = settled.filter(
+    (r): r is PromiseFulfilledResult<LookupResult[]> => r.status === "fulfilled"
+  );
+  if (fulfilled.length === 0) {
+    throw new LookupError("음악 검색 서비스에 연결하지 못했어요. 잠시 후 다시 시도해주세요.");
+  }
+
+  const unique = new Map<string, LookupResult>();
+  for (const { value } of fulfilled) {
+    for (const r of value) if (!unique.has(r.id)) unique.set(r.id, r);
+  }
+
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const score = (r: LookupResult) => {
+    const haystack = `${r.title} ${r.subtitle ?? ""}`.toLowerCase();
+    return words.filter((w) => haystack.includes(w)).length;
+  };
+  // 정렬은 안정 정렬이라 점수가 같으면 검색된 순서(일본 스토어 우선)가 유지된다.
+  return [...unique.values()]
+    .map((r) => ({ r, s: score(r) }))
+    .sort((a, b) => b.s - a.s)
+    .slice(0, MUSIC_MAX_RESULTS)
+    .map(({ r }) => r);
 }
 
 // ── 게임: RAWG (RAWG_API_KEY 필요) ────────────────────────────────

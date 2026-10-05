@@ -7,7 +7,7 @@ const HINTS: Partial<Record<GameCategory, string>> = {
   game: "RAWG에서 검색해요. 영문 제목으로 검색하세요. 결과는 영문 제목이라 필요하면 직접 고쳐주세요.",
   anime: "AniList에서 검색해요. 한글로 안 나오면 영어·일본어 제목으로 검색해 보세요.",
   movies: "TMDB에서 검색해요. 한글 제목도 돼요.",
-  music: "iTunes에서 앨범·곡을 검색해요. 한글도 돼요.",
+  music: "iTunes(일본·미국 스토어)에서 앨범·곡을 검색해요. 곡 제목은 원어(일본어 등)로 검색하면 가장 정확해요.",
 };
 
 export default function LookupBox({
