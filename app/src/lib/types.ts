@@ -50,7 +50,10 @@ export const CATEGORY_FIELD_KEYS: CategoryFieldKey[] = [
 ];
 
 export const CATEGORY_FIELDS: Record<GameCategory, CategoryField[]> = {
-  game: [],
+  game: [
+    { key: "studio", label: "개발사", type: "text" },
+    { key: "release_year", label: "출시년도", type: "year" },
+  ],
   anime: [{ key: "studio", label: "제작사", type: "text" }],
   movies: [{ key: "director", label: "감독", type: "text" }],
   music: [
@@ -64,8 +67,8 @@ export const CATEGORY_FIELDS: Record<GameCategory, CategoryField[]> = {
   ],
 };
 
-// 외부 서비스(AniList/TMDB/iTunes)로 등록 폼을 자동 채울 수 있는 카테고리.
-export const LOOKUP_CATEGORIES: GameCategory[] = ["anime", "movies", "music"];
+// 외부 서비스(RAWG/AniList/TMDB/iTunes)로 등록 폼을 자동 채울 수 있는 카테고리.
+export const LOOKUP_CATEGORIES: GameCategory[] = ["game", "anime", "movies", "music"];
 
 export type LookupResult = {
   id: string;

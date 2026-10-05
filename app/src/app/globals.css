@@ -616,6 +616,22 @@ textarea:focus {
   margin-top: 18px;
 }
 
+.site-footer {
+  max-width: 960px;
+  margin: 32px auto 0;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.site-footer p {
+  margin: 0 0 4px;
+}
+.site-footer a {
+  text-decoration: underline;
+}
+
 .lookup-box {
   margin-bottom: 16px;
   padding: 12px;

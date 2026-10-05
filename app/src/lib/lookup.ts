@@ -187,12 +187,99 @@ async function searchMusic(q: string): Promise<LookupResult[]> {
   ];
 }
 
+// ── 게임: RAWG (RAWG_API_KEY 필요) ────────────────────────────────
+const RAWG = "https://api.rawg.io/api";
+
+// RAWG 장르는 영문뿐이라 자주 쓰는 것만 한글로 바꾸고, 나머지는 그대로 둔다.
+const RAWG_GENRES_KO: Record<string, string> = {
+  Action: "액션",
+  Adventure: "어드벤처",
+  "Role-playing (RPG)": "RPG",
+  RPG: "RPG",
+  Shooter: "슈팅",
+  Strategy: "전략",
+  Puzzle: "퍼즐",
+  Racing: "레이싱",
+  Sports: "스포츠",
+  Simulation: "시뮬레이션",
+  Platformer: "플랫포머",
+  Fighting: "격투",
+  Arcade: "아케이드",
+  Casual: "캐주얼",
+  Indie: "인디",
+  Family: "가족",
+  "Board Games": "보드게임",
+  Educational: "교육",
+  Card: "카드",
+  "Massively Multiplayer": "MMO",
+};
+
+function rawgRequest(path: string, params: Record<string, string> = {}) {
+  const key = process.env.RAWG_API_KEY;
+  if (!key) throw new LookupError("게임 검색용 RAWG_API_KEY가 아직 설정되지 않았어요.");
+  const url = new URL(RAWG + path);
+  url.searchParams.set("key", key);
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+  return getJson(url.toString(), { next: { revalidate: 3600 } });
+}
+
+type RawgGame = {
+  id: number;
+  name: string;
+  released: string | null;
+  background_image: string | null;
+  genres?: { name: string }[];
+};
+
+async function searchGames(q: string): Promise<LookupResult[]> {
+  const json = (await rawgRequest("/games", {
+    search: q,
+    page_size: String(MAX_RESULTS),
+  })) as { results?: RawgGame[] };
+
+  return (json.results ?? []).map((g) => {
+    const year = Number(g.released?.slice(0, 4));
+    const genres = (g.genres ?? []).map((x) => RAWG_GENRES_KO[x.name] ?? x.name);
+    return {
+      id: String(g.id),
+      title: g.name,
+      subtitle: g.released ? g.released.slice(0, 4) : null,
+      genre: genres.length ? genres.slice(0, 3).join(", ") : null,
+      description: null,
+      // 원본은 크지만 카드/목록에는 작은 크롭본이면 충분하다.
+      coverUrl:
+        g.background_image?.replace("/media/games/", "/media/crop/600/400/games/") ?? null,
+      fields: Number.isFinite(year) && year > 0 ? { release_year: year } : {},
+      needsDetail: true,
+    };
+  });
+}
+
+export async function gameDetail(id: string): Promise<LookupResult["fields"]> {
+  const game = (await rawgRequest(`/games/${id}`)) as {
+    developers?: { name: string }[];
+  };
+  const studio = game.developers?.[0]?.name;
+  return studio ? { studio } : {};
+}
+
 export async function searchByCategory(
   category: GameCategory,
   q: string
 ): Promise<LookupResult[]> {
+  if (category === "game") return searchGames(q);
   if (category === "anime") return searchAnime(q);
   if (category === "movies") return searchMovies(q);
   if (category === "music") return searchMusic(q);
   throw new LookupError("이 카테고리는 자동 검색을 지원하지 않아요.");
+}
+
+// 검색 목록에 없는 정보(영화 감독, 게임 개발사)를 선택 시점에 가져온다.
+export async function detailByCategory(
+  category: GameCategory,
+  id: string
+): Promise<LookupResult["fields"]> {
+  if (category === "movies") return movieDetail(id);
+  if (category === "game") return gameDetail(id);
+  throw new LookupError("이 카테고리는 상세 조회를 지원하지 않아요.");
 }

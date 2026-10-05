@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { LookupError, movieDetail, searchByCategory } from "@/lib/lookup";
+import { LookupError, detailByCategory, searchByCategory } from "@/lib/lookup";
 import { LOOKUP_CATEGORIES, isGameCategory } from "@/lib/types";
 
 export async function GET(request: NextRequest) {
@@ -21,10 +21,10 @@ export async function GET(request: NextRequest) {
   try {
     const id = params.get("id");
     if (id) {
-      if (category !== "movies" || !/^\d+$/.test(id)) {
+      if ((category !== "movies" && category !== "game") || !/^\d+$/.test(id)) {
         return Response.json({ error: "잘못된 요청이에요." }, { status: 400 });
       }
-      return Response.json({ fields: await movieDetail(id) });
+      return Response.json({ fields: await detailByCategory(category, id) });
     }
 
     const q = (params.get("q") ?? "").trim();

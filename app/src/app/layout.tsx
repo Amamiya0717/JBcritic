@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import InAppBrowserBanner from "@/components/InAppBrowserBanner";
+import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = {
   title: "JBcritic",
@@ -13,6 +14,7 @@ export default function RootLayout(props: LayoutProps<"/">) {
       <body>
         <InAppBrowserBanner />
         {props.children}
+        <SiteFooter />
       </body>
     </html>
   );
