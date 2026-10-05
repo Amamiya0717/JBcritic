@@ -352,6 +352,9 @@ select {
 .meta-card-title {
   font-weight: 800;
   font-size: 0.95rem;
+  line-height: 1.4;
+  /* 제목이 한 줄이어도 두 줄 높이를 항상 확보해서 카드들의 점수 영역 위치를 맞춘다 */
+  min-height: 2.8em;
   margin: 0 0 8px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
