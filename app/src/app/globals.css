@@ -932,11 +932,227 @@ textarea {
   padding: 20px;
   border-radius: var(--radius);
 }
+/* 작품 추가/수정 화면: 넓은 레이아웃, 큰 입력칸·버튼 (.add-form을 쓰는 다른 폼에는 영향 없음) */
+.page-narrow {
+  max-width: 1000px;
+}
+.page-narrow .section-title {
+  font-size: 1.15rem;
+}
+.work-form {
+  max-width: none;
+  padding: 32px;
+}
+.work-form .form-section {
+  margin-bottom: 36px;
+}
+.work-form .form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--black);
+}
+.work-form .step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--black);
+  color: var(--yellow);
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+.work-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+}
+.work-form .span-2 {
+  grid-column: 1 / -1;
+}
+.work-form .field {
+  gap: 7px;
+  min-width: 0;
+}
+.work-form .field label {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.work-form .optional {
+  margin-left: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.work-form .optional.required {
+  color: var(--red-dark);
+}
+.work-form .input,
+.work-form .select,
+.work-form textarea {
+  font-size: 1rem;
+  padding: 13px 14px;
+  border-width: 1.5px;
+}
+.work-form textarea {
+  min-height: 130px;
+}
+.work-form .category-field {
+  max-width: 340px;
+}
+.work-form .meta-text {
+  font-size: 0.82rem;
+}
+.work-form .form-error {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+}
+
+.btn-lg {
+  padding: 14px 24px;
+  font-size: 0.95rem;
+}
+.btn-block {
+  display: block;
+  width: 100%;
+}
+.work-form .btn-block {
+  padding: 18px;
+  font-size: 1.1rem;
+}
+
+.work-form .cover-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.work-form .cover-preview {
+  width: 200px;
+  aspect-ratio: 5 / 7;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 8px;
+}
+.work-form .cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.work-form .cover-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+.work-form .file-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.work-form .file-btn {
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+.work-form .file-btn.is-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+/* 네이티브 파일 입력은 숨기고 라벨을 버튼처럼 쓴다 (키보드 접근은 유지) */
+.visually-hidden-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+.visually-hidden-file:focus-visible + .file-btn {
+  outline: 2px solid var(--black);
+  outline-offset: 2px;
+}
+
+.work-form .lookup-box {
+  margin: 20px 0 0;
+  padding: 18px;
+  background: #fffbea;
+  border: 1.5px dashed var(--mid-dark);
+}
+.work-form .lookup-box > label {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text);
+  text-transform: none;
+}
+.work-form .lookup-row {
+  margin-top: 8px;
+  gap: 10px;
+}
+.work-form .lookup-row .btn {
+  padding: 0 26px;
+  font-size: 0.95rem;
+}
+.work-form .lookup-item {
+  padding: 10px 14px;
+  gap: 14px;
+}
+.work-form .lookup-thumb {
+  width: 46px;
+  height: 64px;
+}
+.work-form .lookup-title {
+  font-size: 1rem;
+}
+
 .swatch-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 4px;
+}
+.work-form .swatch-row {
+  gap: 12px;
+  margin-top: 6px;
+}
+.work-form .swatch {
+  width: 40px;
+  height: 40px;
+  border-width: 3px;
+}
+
+@media (max-width: 720px) {
+  .work-form {
+    padding: 18px;
+  }
+  .work-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .work-form .cover-grid {
+    grid-template-columns: 1fr;
+  }
+  .work-form .cover-preview {
+    width: 150px;
+  }
 }
 .swatch {
   width: 26px;

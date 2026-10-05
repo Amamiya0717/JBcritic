@@ -114,164 +114,189 @@ export default function AddGameForm({
     });
   }
 
+  const showPreview = !!coverUrl && !coverFailed;
+
   return (
-    <form action={handleSubmit} className="add-form">
+    <form action={handleSubmit} className="add-form work-form">
       {error && <p className="form-error">{error}</p>}
 
-      <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="category">카테고리</label>
-        <select
-          className="select"
-          id="category"
-          name="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value as GameCategory)}
-        >
-          {GAME_CATEGORIES.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {LOOKUP_CATEGORIES.includes(category) && (
-        <LookupBox key={category} category={category} onSelect={applyLookup} />
-      )}
-
-      <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="title">제목</label>
-        <input
-          className="input"
-          id="title"
-          name="title"
-          type="text"
-          placeholder="예: 리썰컴퍼니"
-          key={`title-${rev}`}
-          defaultValue={prefill ? prefill.title : initial?.title}
-        />
-      </div>
-
-      {categoryFields.map((f) => (
-        <div className="field" style={{ marginBottom: 12 }} key={`${f.key}-${rev}`}>
-          <label htmlFor={f.key}>{f.label}</label>
-          <input
-            className="input"
-            id={f.key}
-            name={f.key}
-            type={f.type === "date" ? "date" : f.type === "year" ? "number" : "text"}
-            defaultValue={(prefill ? prefill.fields[f.key] : initial?.[f.key]) ?? undefined}
-          />
+      <section className="form-section">
+        <h3 className="form-section-title">
+          <span className="step">1</span>카테고리 · 정보 검색
+        </h3>
+        <div className="field category-field">
+          <label htmlFor="category">카테고리</label>
+          <select
+            className="select"
+            id="category"
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as GameCategory)}
+          >
+            {GAME_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
         </div>
-      ))}
 
-      <div className="field" style={{ marginBottom: 12 }} key={`genre-${rev}`}>
-        <label htmlFor="genre">장르 (선택)</label>
-        <input
-          className="input"
-          id="genre"
-          name="genre"
-          type="text"
-          placeholder="예: 협동 호러"
-          defaultValue={(prefill ? prefill.genre : initial?.genre) ?? undefined}
-        />
-      </div>
-
-      <div className="field" style={{ marginBottom: 12 }} key={`description-${rev}`}>
-        <label htmlFor="description">간단 설명 (선택)</label>
-        <textarea
-          className="input"
-          id="description"
-          name="description"
-          placeholder="어떤 작품인지 짧게 적어주세요"
-          defaultValue={(prefill ? prefill.description : initial?.description) ?? undefined}
-        />
-      </div>
-
-      <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="coverFile">커버 이미지 업로드 (선택)</label>
-        <input
-          className="input"
-          id="coverFile"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          disabled={uploading}
-          onChange={handleCoverFile}
-        />
-        <p className="meta-text" style={{ margin: "6px 0 0" }}>
-          JPG, PNG, WebP · 2MB 이하. 올리면 아래 URL 칸이 자동으로 채워져요.
-        </p>
-        {uploading && (
-          <p className="meta-text" style={{ margin: "6px 0 0" }}>
-            업로드 중...
-          </p>
+        {LOOKUP_CATEGORIES.includes(category) && (
+          <LookupBox key={category} category={category} onSelect={applyLookup} />
         )}
-        {uploadError && (
-          <p className="form-error" style={{ margin: "6px 0 0" }}>
-            {uploadError}
-          </p>
-        )}
-      </div>
+      </section>
 
-      <div className="field" style={{ marginBottom: 12 }}>
-        <label htmlFor="coverUrl">또는 커버 이미지 URL</label>
-        <input
-          className="input"
-          id="coverUrl"
-          name="coverUrl"
-          type="url"
-          placeholder="https://..."
-          value={coverUrl}
-          onChange={(e) => {
-            setCoverUrl(e.target.value);
-            setCoverFailed(false);
-          }}
-        />
-      </div>
-
-      {coverUrl && (
-        <div style={{ marginBottom: 12 }}>
-          {coverFailed ? (
-            <p className="form-error" style={{ margin: 0 }}>
-              이미지를 불러올 수 없어요.
-            </p>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={coverUrl}
-              alt="미리보기"
-              onError={() => setCoverFailed(true)}
-              style={{
-                width: 80,
-                height: 112,
-                objectFit: "cover",
-                borderRadius: "var(--radius)",
-                border: "1px solid var(--border)",
-                display: "block",
-              }}
+      <section className="form-section">
+        <h3 className="form-section-title">
+          <span className="step">2</span>기본 정보
+        </h3>
+        <div className="form-grid">
+          <div className="field span-2" key={`title-${rev}`}>
+            <label htmlFor="title">
+              제목 <span className="optional required">필수</span>
+            </label>
+            <input
+              className="input"
+              id="title"
+              name="title"
+              type="text"
+              placeholder="예: 리썰컴퍼니"
+              defaultValue={prefill ? prefill.title : initial?.title}
             />
-          )}
-        </div>
-      )}
-      <input type="hidden" name="color" value={color} />
+          </div>
 
-      <div className="field" style={{ marginBottom: 20 }}>
-        <label>대체 색상 (이미지가 없거나 안 불러와질 때 표시)</label>
-        <div className="swatch-row">
-          {SWATCHES.map((c) => (
-            <button
-              key={c}
-              type="button"
-              className={`swatch${color === c ? " selected" : ""}`}
-              style={{ background: c }}
-              onClick={() => setColor(c)}
-              aria-label={c}
-            />
+          {categoryFields.map((f) => (
+            <div className="field" key={`${f.key}-${rev}`}>
+              <label htmlFor={f.key}>
+                {f.label} <span className="optional">선택</span>
+              </label>
+              <input
+                className="input"
+                id={f.key}
+                name={f.key}
+                type={f.type === "date" ? "date" : f.type === "year" ? "number" : "text"}
+                defaultValue={
+                  (prefill ? prefill.fields[f.key] : initial?.[f.key]) ?? undefined
+                }
+              />
+            </div>
           ))}
-        </div>
-      </div>
 
-      <button type="submit" className="btn btn-gold" disabled={pending || uploading}>
+          <div className="field" key={`genre-${rev}`}>
+            <label htmlFor="genre">
+              장르 <span className="optional">선택</span>
+            </label>
+            <input
+              className="input"
+              id="genre"
+              name="genre"
+              type="text"
+              placeholder="예: 협동 호러"
+              defaultValue={(prefill ? prefill.genre : initial?.genre) ?? undefined}
+            />
+          </div>
+
+          <div className="field span-2" key={`description-${rev}`}>
+            <label htmlFor="description">
+              간단 설명 <span className="optional">선택</span>
+            </label>
+            <textarea
+              className="input"
+              id="description"
+              name="description"
+              placeholder="어떤 작품인지 짧게 적어주세요"
+              defaultValue={
+                (prefill ? prefill.description : initial?.description) ?? undefined
+              }
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="form-section">
+        <h3 className="form-section-title">
+          <span className="step">3</span>커버 이미지
+        </h3>
+        <div className="cover-grid">
+          <div
+            className="cover-preview"
+            style={showPreview ? undefined : { background: color }}
+          >
+            {showPreview ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={coverUrl} alt="커버 미리보기" onError={() => setCoverFailed(true)} />
+            ) : (
+              <span>{coverFailed ? "이미지를 불러올 수 없어요" : "미리보기"}</span>
+            )}
+          </div>
+
+          <div className="cover-controls">
+            <div className="field">
+              <label htmlFor="coverFile">이미지 파일 올리기</label>
+              <div className="file-row">
+                <input
+                  className="visually-hidden-file"
+                  id="coverFile"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  disabled={uploading}
+                  onChange={handleCoverFile}
+                />
+                <label
+                  htmlFor="coverFile"
+                  className={`btn btn-lg file-btn${uploading ? " is-disabled" : ""}`}
+                >
+                  {uploading ? "업로드 중..." : "파일 선택"}
+                </label>
+                <span className="meta-text">JPG, PNG, WebP · 2MB 이하</span>
+              </div>
+              {uploadError && <p className="form-error">{uploadError}</p>}
+            </div>
+
+            <div className="field">
+              <label htmlFor="coverUrl">
+                또는 이미지 주소(URL) <span className="optional">선택</span>
+              </label>
+              <input
+                className="input"
+                id="coverUrl"
+                name="coverUrl"
+                type="url"
+                placeholder="https://..."
+                value={coverUrl}
+                onChange={(e) => {
+                  setCoverUrl(e.target.value);
+                  setCoverFailed(false);
+                }}
+              />
+            </div>
+
+            <input type="hidden" name="color" value={color} />
+            <div className="field">
+              <label>대체 색상</label>
+              <p className="meta-text">이미지가 없거나 안 불러와질 때 이 색으로 표시돼요.</p>
+              <div className="swatch-row">
+                {SWATCHES.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    className={`swatch${color === c ? " selected" : ""}`}
+                    style={{ background: c }}
+                    onClick={() => setColor(c)}
+                    aria-label={c}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <button
+        type="submit"
+        className="btn btn-gold btn-lg btn-block"
+        disabled={pending || uploading}
+      >
         {pending ? "저장 중..." : gameId ? "수정하기" : "등록하기"}
       </button>
     </form>

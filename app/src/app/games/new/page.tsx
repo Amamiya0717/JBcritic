@@ -20,12 +20,12 @@ export default async function NewGamePage(props: PageProps<"/games/new">) {
   return (
     <>
       <Header />
-      <div className="page">
+      <div className="page page-narrow">
         <Link href={categoryPath(category)} className="back-link btn-text">
           ← 목록으로
         </Link>
-        <h2 className="section-title" style={{ fontSize: "1rem" }}>
-          새 항목 등록
+        <h2 className="section-title">
+          새 작품 등록
         </h2>
         {user ? (
           <AddGameForm defaultCategory={category} />
