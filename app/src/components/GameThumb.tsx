@@ -35,7 +35,7 @@ export default function GameThumb({
     );
   }
 
-  const size = variant === "list" ? { width: 44, height: 60 } : { width: 110, height: 150 };
+  const size = variant === "list" ? { width: 52, height: 72 } : { width: 120, height: 168 };
 
   if (!coverUrl || failed) {
     return (
@@ -60,7 +60,7 @@ export default function GameThumb({
       style={{
         width: size.width,
         height: size.height,
-        borderRadius: "var(--radius)",
+        borderRadius: "var(--radius-media)",
         flexShrink: 0,
         objectFit: "cover",
       }}

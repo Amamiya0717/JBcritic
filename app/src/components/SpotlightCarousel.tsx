@@ -54,7 +54,7 @@ export default function SpotlightCarousel({
               disabled={atStart}
               aria-label="이전"
             >
-              ‹
+              ←
             </button>
             <button
               type="button"
@@ -63,7 +63,7 @@ export default function SpotlightCarousel({
               disabled={atEnd}
               aria-label="다음"
             >
-              ›
+              →
             </button>
           </div>
         </div>

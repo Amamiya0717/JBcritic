@@ -12,6 +12,11 @@ export default function SpotlightCard({
 }) {
   const tier = tierOf(game.avgScore);
   const dist = tierDistribution(scores);
+  const segments = [
+    { key: "good", width: dist.good, color: "var(--tier-good)" },
+    { key: "mid", width: dist.mid, color: "var(--tier-mid)" },
+    { key: "low", width: dist.low, color: "var(--tier-low)" },
+  ].filter((seg) => seg.width > 0);
 
   return (
     <Link href={`/games/${game.id}`} className="meta-card">
@@ -30,16 +35,20 @@ export default function SpotlightCard({
       <div className="meta-card-score">
         <p className="meta-card-score-label">JB SCORE</p>
         <div className="meta-card-score-row">
-          <div className={`score-box score-lg ${tier}`}>{fmtScore(game.avgScore)}</div>
           <div>
             <p className="meta-card-descriptor">{tierLabel(game.avgScore)}</p>
             <p className="meta-card-reviews">리뷰 {game.reviewCount}건</p>
           </div>
+          <div className={`score-box score-lg ${tier}`}>{fmtScore(game.avgScore)}</div>
         </div>
         <div className="meta-card-bar">
-          <span style={{ width: `${dist.good}%`, background: "var(--green-dark)" }} />
-          <span style={{ width: `${dist.mid}%`, background: "var(--mid-dark)" }} />
-          <span style={{ width: `${dist.low}%`, background: "var(--red-dark)" }} />
+          {segments.length > 0 ? (
+            segments.map((seg) => (
+              <span key={seg.key} style={{ width: `${seg.width}%`, background: seg.color }} />
+            ))
+          ) : (
+            <span style={{ width: "100%", background: "var(--border)" }} />
+          )}
         </div>
       </div>
     </Link>
